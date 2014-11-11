@@ -9,6 +9,6 @@ package adventure;
  *
  * @author laisfb
  */
-public class movingBlocks {
+public interface Food {
     
 }

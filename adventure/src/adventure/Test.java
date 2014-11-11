@@ -15,7 +15,10 @@ public class Test {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        
+        TakeOrders take = new TakeOrders(1);
+        take.bigBang(900,900,1);
+        
     }
     
 }

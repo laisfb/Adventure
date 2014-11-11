@@ -9,6 +9,6 @@ package adventure;
  *
  * @author laisfb
  */
-public class randomObjects {
+public class Order {
     
 }
