@@ -60,15 +60,24 @@ public class TakeOrders extends World {
         
         if(showOrders) {
             FromFileImage balloon;
-            Posn pos, newPos;
             i = 0;
             
+            int size;
+            int j = 0;
+            Food[] order;
+            WorldImage food;
+            
             while(i<listOfClients.length) {
-                pos = listOfClients[i].getPosition();
-                newPos = new Posn(pos.x, pos.y - 300);
-                
-                balloon = new FromFileImage(newPos, str + "balloon.png");
+                balloon = listOfClients[i].getBalloon();
                 img = new OverlayImages(img, balloon);
+                
+                size = listOfClients[i].getOrder().getSize();
+                order = listOfClients[i].getOrder().getFood();
+                while(j<size) {
+                    food = order[j].getImage();
+                    img = new OverlayImages(img, food);
+                    j++;
+                }
                 i++;
             }
         }

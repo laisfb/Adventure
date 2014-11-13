@@ -5,10 +5,43 @@
  */
 package adventure;
 
+import java.util.Random;
+import javalib.worldimages.Posn;
+
 /**
  *
  * @author laisfb
  */
 public class Order {
+    
+    Food[] listOfFood;
+    int size;
+    
+    // pos : the position of the balloon
+    Order(Posn pos) {
+        this.size = 1; //randomInt(5); // 1 <= size <= 5
+        listOfFood = new Food[size];
+        
+        for(int i=0; i<size; i++)
+            listOfFood[i] = randomFood(pos);
+    }
+    
+    public int getSize() {
+        return this.size;
+    }
+    
+    public Food[] getFood() {
+        return this.listOfFood;
+    }
+    
+    // pos : the position of the balloon
+    public static Food randomFood(Posn pos) {
+        return new Pizza(pos);
+    }
+    
+    public static int randomInt(int max) {
+	Random r = new Random();
+	return (r.nextInt(max) + 1);
+    }
     
 }
