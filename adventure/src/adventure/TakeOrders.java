@@ -5,7 +5,7 @@
  */
 package adventure;
 
-import java.awt.Color;
+import static java.lang.Math.abs;
 import javalib.funworld.*;
 import javalib.worldimages.*;
 
@@ -17,13 +17,28 @@ public class TakeOrders extends World {
 
     private String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
 
-    Client[] listOfClients;
     int LEVEL = -1;
-
+    
+    Client[] listOfClients;
+    boolean showOrders;
+    int time;
     
     TakeOrders(int level) {
         this.LEVEL = level;
-        listOfClients = new Client[level];
+        
+        this.listOfClients = new Client[level];
+        this.showOrders = false;
+        this.time = 0;
+        
+        listOfClients[0] = new kid();
+    }
+    
+    TakeOrders(int level, boolean showOrders, int time) {
+        this.LEVEL = level;
+        
+        this.listOfClients = new Client[level];
+        this.showOrders = showOrders;
+        this.time = time;
         
         listOfClients[0] = new kid();
     }
@@ -43,12 +58,50 @@ public class TakeOrders extends World {
         
         img = new OverlayImages(img, counter);
         
+        if(showOrders) {
+            FromFileImage balloon;
+            Posn pos, newPos;
+            i = 0;
+            
+            while(i<listOfClients.length) {
+                pos = listOfClients[i].getPosition();
+                newPos = new Posn(pos.x, pos.y - 300);
+                
+                balloon = new FromFileImage(newPos, str + "balloon.png");
+                img = new OverlayImages(img, balloon);
+                i++;
+            }
+        }
+        
         return img;
     }
     
+    @Override
     public World onTick() {
-        return this;
+        if(time < 5)
+            return new TakeOrders(LEVEL, true, time+1);
+        else
+            return new TakeOrders(LEVEL, false, time+1);
     }
     
+    @Override
+    public World onMouseClicked(Posn loc) {
+        int i = 0;
+        Posn pos;
+        
+        while(i<listOfClients.length) {
+            pos = listOfClients[i].getPosition();
+            System.out.println("MouseClick: (" + loc.x + " , " + loc.y + ")");
+            System.out.println("Client: (" + pos.x + " , " + pos.y + ")");
+            System.out.println("Difference: (" + (abs(pos.x - loc.x)) + " , " + (abs(pos.y - loc.y)) + ")");
+            if (loc.closeTo(pos)) {
+                System.out.println("Close enough");
+                return new TakeOrders(LEVEL, true, 0);                
+            }
+            i++;
+        }
+        
+        return this;
+    }
     
 }

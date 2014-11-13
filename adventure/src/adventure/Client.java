@@ -5,7 +5,6 @@
  */
 package adventure;
 
-import java.awt.Color;
 import javalib.worldimages.*;
 
 /**
@@ -16,17 +15,20 @@ public interface Client {
     
     public Order getOrder();
     public WorldImage getImage();
+    public Posn getPosition();
     
 }
 
 class kid implements Client {
     
-    private String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
+    private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
 
-    private Order order;
+    private final Order order;
+    private final Posn position;
     
     kid() {
         this.order = new Order();
+        this.position = new Posn(750,600);
     }
     
     @Override
@@ -36,7 +38,12 @@ class kid implements Client {
 
     @Override
     public WorldImage getImage() {
-        return new FromFileImage(new Posn(750,600), str + "kid.png");
+        return new FromFileImage(this.position, str + "kid.png");
+    }
+    
+    @Override
+    public Posn getPosition() {
+        return this.position;
     }
     
 }

@@ -16,6 +16,7 @@ public class Test {
      */
     public static void main(String[] args) {
         
+        // level , showOrders , time
         TakeOrders take = new TakeOrders(1);
         take.bigBang(900,900,1);
         
