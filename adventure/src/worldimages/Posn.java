@@ -18,10 +18,24 @@ public class Posn {
     this.y = y;
   }
   
+  // Method used to check if the mouse click was near the client
   public boolean closeTo(Posn pos) {
       return (abs(pos.x - this.x)) <= 50 &&
              (abs(pos.y - this.y)) <= 150;
       
               
+  }
+  
+  // Method used to check if the mouse click was inside the box
+  public boolean inside(RectangleImage rect) {
+      int height = rect.height;
+      int width = rect.width;
+      Posn pos = rect.pinhole;
+      
+      // I have no ideia why there has to be the +- 5
+      return this.x > pos.x - (width/2 - 5) &&
+             this.x < pos.x + (width/2 + 5) &&
+             this.y > pos.y - (height/2) &&
+             this.y < pos.y + (height/2);
   }
 }

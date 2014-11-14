@@ -5,6 +5,7 @@
  */
 package adventure;
 
+import java.awt.Color;
 import static java.lang.Math.abs;
 import javalib.funworld.*;
 import javalib.worldimages.*;
@@ -15,13 +16,15 @@ import javalib.worldimages.*;
  */
 public class TakeOrders extends World {
 
-    private String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
+    private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
 
     int LEVEL = -1;
     
     Client[] listOfClients;
     boolean showOrders;
     int time;
+    
+    RectangleImage box;
     
     TakeOrders(int level) {
         this.LEVEL = level;
@@ -44,7 +47,7 @@ public class TakeOrders extends World {
     }
 
     @Override
-    public WorldImage makeImage() {        
+    public WorldImage makeImage() {      
         
         FromFileImage bg = new FromFileImage(new Posn(450,330), str + "background.png");
         FromFileImage counter = new FromFileImage(new Posn(450,950), str + "countertop.png");
@@ -82,12 +85,19 @@ public class TakeOrders extends World {
             }
         }
         
+        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
+        TextImage text = new TextImage(new Posn(800, 850), "MAKE ORDERS", Color.BLACK);
+        text.size = 15;
+        text.style = 1;
+        
+        img = new OverlayImages(img, this.box);
+        img = new OverlayImages(img, text);
         return img;
     }
     
     @Override
     public World onTick() {
-        if(time < 5)
+        if(time < 3)
             return new TakeOrders(LEVEL, true, time+1);
         else
             return new TakeOrders(LEVEL, false, time+1);
@@ -95,22 +105,29 @@ public class TakeOrders extends World {
     
     @Override
     public World onMouseClicked(Posn loc) {
-        int i = 0;
-        Posn pos;
         
-        while(i<listOfClients.length) {
-            pos = listOfClients[i].getPosition();
-            System.out.println("MouseClick: (" + loc.x + " , " + loc.y + ")");
-            System.out.println("Client: (" + pos.x + " , " + pos.y + ")");
-            System.out.println("Difference: (" + (abs(pos.x - loc.x)) + " , " + (abs(pos.y - loc.y)) + ")");
-            if (loc.closeTo(pos)) {
-                System.out.println("Close enough");
-                return new TakeOrders(LEVEL, true, 0);                
-            }
-            i++;
+        // If clicked whithin the box of "make orders"
+        if (loc.inside(this.box)) {
+            System.out.println("Go to kitchen.");
+            return new MakeOrders(this.listOfClients);
         }
         
-        return this;
+        else {
+            int i = 0;
+            Posn pos;
+            while(i<listOfClients.length) {
+                pos = listOfClients[i].getPosition();
+                // System.out.println("MouseClick: (" + loc.x + " , " + loc.y + ")");
+                // System.out.println("Client: (" + pos.x + " , " + pos.y + ")");
+                // System.out.println("Difference: (" + (abs(pos.x - loc.x)) + " , " + (abs(pos.y - loc.y)) + ")");
+                if (loc.closeTo(pos)) {
+                    return new TakeOrders(LEVEL, true, 0);                
+                }
+                i++;
+            }
+
+            return this;
+        }
     }
     
 }

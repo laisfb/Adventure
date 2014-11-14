@@ -5,6 +5,7 @@
  */
 package adventure;
 
+import java.awt.Color;
 import javalib.funworld.*;
 import javalib.worldimages.*;
 
@@ -14,9 +15,47 @@ import javalib.worldimages.*;
  */
 public class MakeOrders extends World {
 
+    private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
+
+    Client[] listOfClients;
+    Order[] listOfOrders;
+    
+    RectangleImage box;
+    
+    MakeOrders(Client[] list) {
+        this.listOfClients = list;        
+    }
+    
     @Override
     public WorldImage makeImage() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        FromFileImage bg = new FromFileImage(new Posn(100,450), str + "kitchen.png");
+        
+        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
+        TextImage text = new TextImage(new Posn(800, 850), "DELIVER ORDERS", Color.BLACK);
+        text.size = 15;
+        text.style = 1;
+        
+        OverlayImages img = new OverlayImages(bg, this.box);
+        img = new OverlayImages(img, text);
+        
+        //img = new OverlayImages(img, foods());
+        
+        return img;
+    }
+    
+    
+    
+    
+    @Override
+    public World onMouseClicked(Posn loc) {
+        
+        // If clicked whithin the box of "deliver orders"
+        if (loc.inside(this.box)) {
+            System.out.println("Deliver the food.");
+            return new DeliverOrders(this.listOfClients, this.listOfOrders);
+        }
+        
+        return this;
     }
     
 }
