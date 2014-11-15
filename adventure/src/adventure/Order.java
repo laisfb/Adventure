@@ -5,6 +5,7 @@
  */
 package adventure;
 
+import java.util.Arrays;
 import java.util.Random;
 import javalib.worldimages.Posn;
 
@@ -32,6 +33,10 @@ public class Order {
     
     public Food[] getFood() {
         return this.listOfFood;
+    }
+    
+    public boolean equals(Order ord) {
+        return (this.size == ord.size && Arrays.equals(this.listOfFood, ord.listOfFood));
     }
     
     // pos : the position of the balloon

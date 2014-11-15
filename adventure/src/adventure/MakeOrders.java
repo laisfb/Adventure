@@ -6,6 +6,7 @@
 package adventure;
 
 import java.awt.Color;
+import java.util.Arrays;
 import javalib.funworld.*;
 import javalib.worldimages.*;
 
@@ -23,14 +24,15 @@ public class MakeOrders extends World {
     RectangleImage box;
     
     MakeOrders(Client[] list) {
-        this.listOfClients = list;        
+        this.listOfClients = list;
+        this.listOfOrders = new Order[list.length];
+        
+        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
     }
     
     @Override
     public WorldImage makeImage() {
         FromFileImage bg = new FromFileImage(new Posn(100,450), str + "kitchen.png");
-        
-        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
         TextImage text = new TextImage(new Posn(800, 850), "DELIVER ORDERS", Color.BLACK);
         text.size = 15;
         text.style = 1;
@@ -43,9 +45,6 @@ public class MakeOrders extends World {
         return img;
     }
     
-    
-    
-    
     @Override
     public World onMouseClicked(Posn loc) {
         
@@ -56,6 +55,16 @@ public class MakeOrders extends World {
         }
         
         return this;
+    }
+    
+    // Two "MakeOrders" are equal if they have the same list of clients and same list of orders made
+    public boolean equals(World w) {
+        if(w instanceof MakeOrders) {
+            return Arrays.equals(this.listOfClients, ((MakeOrders)w).listOfClients) &&
+                   Arrays.equals(this.listOfOrders,  ((MakeOrders)w).listOfOrders);
+        }
+        
+        return false;
     }
     
 }

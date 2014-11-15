@@ -5,11 +5,16 @@
  */
 package adventure;
 
+import java.util.Random;
+import javalib.worldimages.Posn;
+
 /**
  *
  * @author laisfb
  */
 public class Test {
+
+    private final static boolean testingMode = true;
 
     /**
      * @param args the command line arguments
@@ -17,9 +22,59 @@ public class Test {
     public static void main(String[] args) {
         
         // level , showOrders , time
-        TakeOrders take = new TakeOrders(1);
-        take.bigBang(900,900,1);
-        
+        if(!testingMode) {
+            TakeOrders take = new TakeOrders(1);
+            take.bigBang(900,900,1);
+        }
+        else {
+            check_transitions();
+        }
+
+    }
+
+    public static int randomInt(int max) {
+	Random r = new Random();
+	return r.nextInt(max + 1);
     }
     
+    public static Posn randomPos() {
+        int x = randomInt(900);
+        int y = randomInt(900);
+        return new Posn(x,y);
+    }
+
+    public static void check_transitions() {
+        TakeOrders take = new TakeOrders(1);
+        take.bigBang(900,900,1);
+        //check_TakeOrders(deliver);
+        
+        MakeOrders make = new MakeOrders(take.listOfClients);
+        DeliverOrders deliver = new DeliverOrders(make.listOfClients, make.listOfOrders);
+        
+        Posn pos = randomPos();
+        // System.out.println("Pos: (" + pos.x + "," + pos.y + ")");
+        // System.out.println("Box: (" + take.box.pinhole.x + "," + take.box.pinhole.y + ")");
+        
+        if (pos.inside(take.box)) {
+            if (make.equals(take.onMouseClicked(pos))) {
+                make.bigBang(900,900,1);
+                //check_MakeOrders(make);
+            }
+            else
+                throw new RuntimeException("ERROR IN: check_transitions (takeOrders -> makeOrders)");
+        }
+        
+        if (pos.inside(make.box)) {
+            if (deliver.equals(make.onMouseClicked(pos))) {
+                deliver.bigBang(900,900,1);
+                //check_DeliverOrders(deliver);
+            }
+            else
+                throw new RuntimeException("ERROR IN: check_transitions (takeOrders -> makeOrders)");
+        }
+        
+    }
+
+
+
 }

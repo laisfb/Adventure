@@ -18,6 +18,7 @@ public interface Client {
     public Posn getPosition();
     public FromFileImage getBalloon();
     //public Posn getBalloonPosition();
+    public boolean equals(Client c);
     
 }
 
@@ -56,6 +57,11 @@ class kid implements Client {
     @Override
     public FromFileImage getBalloon() {
         return this.balloon;
+    }
+    
+    @Override
+    public boolean equals(Client c) {
+        return (this.order.equals(c.getOrder()) && this.position.equals(c.getPosition()));
     }
     
 }

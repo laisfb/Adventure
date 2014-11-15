@@ -6,6 +6,7 @@
 package adventure;
 
 import java.awt.Color;
+import java.util.Arrays;
 import javalib.funworld.*;
 import javalib.worldimages.*;
 
@@ -27,6 +28,8 @@ public class DeliverOrders extends World {
     DeliverOrders(Client[] listOfClients, Order[] listOfOrders) {
         this.listOfClients = listOfClients;        
         this.listOfOrders = listOfOrders;
+        
+        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
     }
     
     @Override
@@ -44,7 +47,6 @@ public class DeliverOrders extends World {
         
         img = new OverlayImages(img, counter);
         
-        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
         TextImage text = new TextImage(new Posn(800, 850), "MAKE ORDERS", Color.BLACK);
         text.size = 15;
         text.style = 1;
@@ -64,6 +66,15 @@ public class DeliverOrders extends World {
         }
         
         return this;
+    }
+    
+    public boolean equals(World w) {
+        if(w instanceof DeliverOrders) {
+            return Arrays.equals(this.listOfClients, ((DeliverOrders)w).listOfClients) &&
+                   Arrays.equals(this.listOfOrders,  ((DeliverOrders)w).listOfOrders);
+        }
+        
+        return false;
     }
     
 }

@@ -6,7 +6,6 @@
 package adventure;
 
 import java.awt.Color;
-import static java.lang.Math.abs;
 import javalib.funworld.*;
 import javalib.worldimages.*;
 
@@ -33,6 +32,8 @@ public class TakeOrders extends World {
         this.showOrders = false;
         this.time = 0;
         
+        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
+        
         listOfClients[0] = new kid();
     }
     
@@ -42,6 +43,8 @@ public class TakeOrders extends World {
         this.listOfClients = new Client[level];
         this.showOrders = showOrders;
         this.time = time;
+        
+        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
         
         listOfClients[0] = new kid();
     }
@@ -85,7 +88,6 @@ public class TakeOrders extends World {
             }
         }
         
-        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
         TextImage text = new TextImage(new Posn(800, 850), "MAKE ORDERS", Color.BLACK);
         text.size = 15;
         text.style = 1;

@@ -5,6 +5,7 @@
  */
 package adventure;
 
+import javalib.funworld.World;
 import javalib.worldimages.FromFileImage;
 import javalib.worldimages.Posn;
 import javalib.worldimages.WorldImage;
@@ -15,7 +16,8 @@ import javalib.worldimages.WorldImage;
  */
 public interface Food {
     public WorldImage getImage();
-    public Posn getPosition();    
+    public Posn getPosition();
+    public boolean equals(Food f);
 }
 
 class Pizza implements Food {
@@ -38,4 +40,9 @@ class Pizza implements Food {
         return this.position;
     }
     
+    // FromFileImage has a methods "equals"
+    @Override
+    public boolean equals(Food f) {
+        return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+    }
 }

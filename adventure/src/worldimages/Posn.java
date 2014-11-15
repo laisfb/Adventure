@@ -18,6 +18,10 @@ public class Posn {
     this.y = y;
   }
   
+  public boolean equals(Posn pos) {
+      return (this.x == pos.x && this.y == pos.y);
+  }
+  
   // Method used to check if the mouse click was near the client
   public boolean closeTo(Posn pos) {
       return (abs(pos.x - this.x)) <= 50 &&
