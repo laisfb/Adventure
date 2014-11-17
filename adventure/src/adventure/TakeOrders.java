@@ -37,7 +37,7 @@ public class TakeOrders extends World {
         listOfClients[0] = new kid();
     }
     
-    TakeOrders(int level, boolean showOrders, int time) {
+    TakeOrders(int level, Client[] list, boolean showOrders, int time) {
         this.LEVEL = level;
         
         this.listOfClients = new Client[level];
@@ -46,7 +46,7 @@ public class TakeOrders extends World {
         
         this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
         
-        listOfClients[0] = new kid();
+        listOfClients = list;
     }
 
     @Override
@@ -69,7 +69,6 @@ public class TakeOrders extends World {
             i = 0;
             
             int size;
-            int j = 0;
             Food[] order;
             WorldImage food;
             
@@ -79,6 +78,8 @@ public class TakeOrders extends World {
                 
                 size = listOfClients[i].getOrder().getSize();
                 order = listOfClients[i].getOrder().getFood();
+            
+                int j = 0;
                 while(j<size) {
                     food = order[j].getImage();
                     img = new OverlayImages(img, food);
@@ -100,9 +101,9 @@ public class TakeOrders extends World {
     @Override
     public World onTick() {
         if(time < 3)
-            return new TakeOrders(LEVEL, true, time+1);
+            return new TakeOrders(LEVEL, this.listOfClients, true, time+1);
         else
-            return new TakeOrders(LEVEL, false, time+1);
+            return new TakeOrders(LEVEL, this.listOfClients, false, time+1);
     }
     
     @Override
@@ -123,7 +124,7 @@ public class TakeOrders extends World {
                 // System.out.println("Client: (" + pos.x + " , " + pos.y + ")");
                 // System.out.println("Difference: (" + (abs(pos.x - loc.x)) + " , " + (abs(pos.y - loc.y)) + ")");
                 if (loc.closeTo(pos)) {
-                    return new TakeOrders(LEVEL, true, 0);                
+                    return new TakeOrders(this.LEVEL, this.listOfClients, true, 0);                
                 }
                 i++;
             }

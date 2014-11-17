@@ -25,9 +25,11 @@ public interface Client {
 class kid implements Client {
     
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
-
-    private final Order order;
+    
     private final Posn position;
+    
+    private final Order order;
+    
     private final FromFileImage balloon;
     
     kid() {
@@ -35,7 +37,6 @@ class kid implements Client {
         
         Posn pos = new Posn(this.position.x, this.position.y - 300);
         this.balloon = new FromFileImage(pos, str + "balloon.png");
-        
         this.order = new Order(this.balloon.pinhole);
     }
     
