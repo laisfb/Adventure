@@ -6,6 +6,7 @@
 package adventure;
 
 import java.awt.Color;
+import java.util.List;
 import java.util.Arrays;
 import javalib.funworld.*;
 import javalib.worldimages.*;
@@ -22,12 +23,35 @@ public class MakeOrders extends World {
     Order[] listOfOrders;
     
     RectangleImage box;
+    Posn[] boxPosition = new Posn[9];
+    FromFileImage[] boxes = new FromFileImage[9];
     
-    MakeOrders(Client[] list) {
-        this.listOfClients = list;
-        this.listOfOrders = new Order[list.length];
+    MakeOrders(Client[] clients) {
+        this.listOfClients = clients;
+        this.listOfOrders = new Order[clients.length];
         
+        int k = 0;
         this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
+        for(int i=0; i<3; i++)
+            for(int j=0; j<3; j++) {
+                k = 3*i + j;
+                boxPosition[k] = new Posn(300*i + 150, 250*j + 120);
+                boxes[k] = new FromFileImage(boxPosition[k], str + "box.png");
+            }
+    }
+    
+    MakeOrders(Client[] clients, Order[] orders) {
+        this.listOfClients = clients;
+        this.listOfOrders = orders;
+        
+        int k = 0;
+        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
+        for(int i=0; i<3; i++)
+            for(int j=0; j<3; j++) {
+                k = 3*i + j;
+                boxPosition[k] = new Posn(300*i + 150, 250*j + 120);
+                boxes[k] = new FromFileImage(boxPosition[k], str + "box.png");
+            }
     }
     
     @Override
@@ -40,7 +64,18 @@ public class MakeOrders extends World {
         OverlayImages img = new OverlayImages(bg, this.box);
         img = new OverlayImages(img, text);
         
-        //img = new OverlayImages(img, foods());
+        FromFileImage box;
+        String name;
+        for(int i=0; i<9; i++) {
+            img = new OverlayImages(img, boxes[i]);
+                
+            name = Order.everyFood[i].toString();
+            text = new TextImage(new Posn(boxPosition[i].x - 2*name.length() - 8, boxPosition[i].y + 30), name, Color.BLACK);
+            text.size = 20;
+            text.style = 1;
+
+            img = new OverlayImages(img, text);
+        }
         
         return img;
     }
@@ -52,6 +87,14 @@ public class MakeOrders extends World {
         if (loc.inside(this.box)) {
             System.out.println("Deliver the food.");
             return new DeliverOrders(this.listOfClients, this.listOfOrders);
+        }
+        else {
+            int j=0;
+            for(int i=0; i<9; i++) {
+                if (loc.inside(boxes[i])) {
+                    System.out.println(Order.everyFood[i].toString());
+                }
+            }
         }
         
         return this;

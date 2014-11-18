@@ -15,25 +15,31 @@ import javalib.worldimages.Posn;
  */
 public class Order {
     
-    Food[] everyFood;
+    static Food[] everyFood;
     
     Food[] listOfFood;
     int size;
+    static Posn balloon;
     
     // pos : the position of the balloon
     Order(Posn pos) {
-        createListOfFood(pos);
-        
         // Use only for test
         //this.size = 9;
-        //this.listOfFood = everyFood;
+        //this.listOfFood = createListOfFood();
         
         this.size  = randomInt(5) + 1;
         this.listOfFood = new Food[size];
+        this.balloon = pos;
+        this.everyFood = createListOfFood();
         
         for(int i=0; i<size; i++)
             this.listOfFood[i] = randomFood();
     }
+    
+     Order(Food[] list) {
+         this.size = list.length;
+         this.listOfFood = list;
+     }
     
     public int getSize() {
         return this.size;
@@ -44,12 +50,13 @@ public class Order {
     }
     
     public boolean equals(Order ord) {
-        return (this.size == ord.size && Arrays.equals(this.everyFood, ord.everyFood));
+        return (this.size == ord.size && Arrays.equals(this.listOfFood, ord.listOfFood));
     }
     
     // pos : the position of the balloon
-    public void createListOfFood(Posn pos) {
-        this.everyFood = new Food[9];
+    public static Food[] createListOfFood() {
+        Posn pos = Order.balloon;
+        Food[] everyFood = new Food[9];
         
         everyFood[0] = new Pizza(pos);
         everyFood[1] = new HotDog(pos);
@@ -61,10 +68,13 @@ public class Order {
         everyFood[6] = new Coffee(pos);
         everyFood[7] = new Soda(pos);
         everyFood[8] = new Milk(pos);
+        
+        return everyFood;
     }
     
-    public Food randomFood() {
-        return this.everyFood[randomInt(everyFood.length)]; // 0 <= i < lenght
+    public static Food randomFood() {
+        Food[] list = createListOfFood();
+        return list[randomInt(list.length)]; // 0 <= i < lenght
     }
     
     public static int randomInt(int max) {

@@ -23,6 +23,8 @@ public class TakeOrders extends World {
     boolean showOrders;
     int time;
     
+    public static Food[] everyFood;
+    
     RectangleImage box;
     
     TakeOrders(int level) {
@@ -123,7 +125,7 @@ public class TakeOrders extends World {
                 // System.out.println("MouseClick: (" + loc.x + " , " + loc.y + ")");
                 // System.out.println("Client: (" + pos.x + " , " + pos.y + ")");
                 // System.out.println("Difference: (" + (abs(pos.x - loc.x)) + " , " + (abs(pos.y - loc.y)) + ")");
-                if (loc.closeTo(pos)) {
+                if (loc.insideHalf(this.listOfClients[i].getImage())) {
                     return new TakeOrders(this.LEVEL, this.listOfClients, true, 0);                
                 }
                 i++;

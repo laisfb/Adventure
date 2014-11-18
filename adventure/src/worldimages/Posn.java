@@ -23,23 +23,26 @@ public class Posn {
   }
   
   // Method used to check if the mouse click was near the client
-  public boolean closeTo(Posn pos) {
-      return (abs(pos.x - this.x)) <= 50 &&
-             (abs(pos.y - this.y)) <= 150;
+  public boolean insideHalf(WorldImage img) {
+      int height = img.getHeight();
+      int width = img.getWidth();
+      Posn pos = img.pinhole;
       
-              
+      return this.x > pos.x - width/2 &&
+             this.x < pos.x + width/2 &&
+             this.y > pos.y - height/2 &&
+             this.y < pos.y;
   }
   
-  // Method used to check if the mouse click was inside the box
-  public boolean inside(RectangleImage rect) {
-      int height = rect.height;
-      int width = rect.width;
-      Posn pos = rect.pinhole;
+  // Method used to check if the mouse click was inside the image
+  public boolean inside(WorldImage img) {
+      int height = img.getHeight();
+      int width = img.getWidth();
+      Posn pos = img.pinhole;
       
-      // I have no ideia why there has to be the +- 5
-      return this.x > pos.x - (width/2 - 5) &&
-             this.x < pos.x + (width/2 + 5) &&
-             this.y > pos.y - (height/2) &&
-             this.y < pos.y + (height/2);
+      return this.x > pos.x - width/2 &&
+             this.x < pos.x + width/2 &&
+             this.y > pos.y - height/2 &&
+             this.y < pos.y + height/2;
   }
 }

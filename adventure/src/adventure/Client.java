@@ -27,7 +27,6 @@ class kid implements Client {
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
     
     private final Posn position;
-    
     private final Order order;
     
     private final FromFileImage balloon;

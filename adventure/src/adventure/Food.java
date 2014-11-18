@@ -19,6 +19,7 @@ public interface Food {
     public Posn getPosition();
     public void setPosition(Posn pos);
     public boolean equals(Food f);
+    public String toString();
 }
 
 class Pizza implements Food {
@@ -50,6 +51,11 @@ class Pizza implements Food {
     @Override
     public boolean equals(Food f) {
         return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+    }
+    
+    @Override
+    public String toString() {
+        return "PIZZA";
     }
 }
 
@@ -83,6 +89,11 @@ class HotDog implements Food {
     public boolean equals(Food f) {
         return ( (FromFileImage)this.getImage() ).equals(f.getImage());
     }
+    
+    @Override
+    public String toString() {
+        return "HOT DOG";
+    }
 }
 
 class Hamburger implements Food {
@@ -114,6 +125,11 @@ class Hamburger implements Food {
     @Override
     public boolean equals(Food f) {
         return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+    }
+    
+    @Override
+    public String toString() {
+        return "HAMBURGER";
     }
 }
 
@@ -147,6 +163,11 @@ class Fries implements Food {
     public boolean equals(Food f) {
         return ( (FromFileImage)this.getImage() ).equals(f.getImage());
     }
+    
+    @Override
+    public String toString() {
+        return "FRIES";
+    }
 }
 class Sandwich implements Food {
     
@@ -177,6 +198,11 @@ class Sandwich implements Food {
     @Override
     public boolean equals(Food f) {
         return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+    }
+    
+    @Override
+    public String toString() {
+        return "SANDWICH";
     }
 }
 
@@ -210,6 +236,11 @@ class Cookies implements Food {
     public boolean equals(Food f) {
         return ( (FromFileImage)this.getImage() ).equals(f.getImage());
     }
+    
+    @Override
+    public String toString() {
+        return "COOKIES";
+    }
 }
 
 class Coffee implements Food {
@@ -241,6 +272,11 @@ class Coffee implements Food {
     @Override
     public boolean equals(Food f) {
         return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+    }
+    
+    @Override
+    public String toString() {
+        return "COFFEE";
     }
 }
 
@@ -274,6 +310,11 @@ class Soda implements Food {
     public boolean equals(Food f) {
         return ( (FromFileImage)this.getImage() ).equals(f.getImage());
     }
+    
+    @Override
+    public String toString() {
+        return "SODA";
+    }
 }
 
 class Milk implements Food {
@@ -305,5 +346,10 @@ class Milk implements Food {
     @Override
     public boolean equals(Food f) {
         return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+    }
+    
+    @Override
+    public String toString() {
+        return "MILK";
     }
 }
