@@ -19,16 +19,16 @@ public class DeliverOrders extends World {
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
 
     Client[] listOfClients;
-    Order[] listOfOrders;
+    Order done;
     
     RectangleImage box;
     
     boolean gameOver = false;
     
-    DeliverOrders(Client[] listOfClients, Order[] listOfOrders) {
+    DeliverOrders(Client[] listOfClients, Order beingMade) {
         this.listOfClients = listOfClients;        
-        this.listOfOrders = listOfOrders;
-        
+        this.done = beingMade;
+        //System.out.println("Order size: " + this.done.size);
         this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
     }
     
@@ -40,7 +40,7 @@ public class DeliverOrders extends World {
         OverlayImages img = new OverlayImages(bg, bg);
         
         int i=0;
-        while(i<listOfClients.length) {
+        while (i<listOfClients.length && listOfClients[i].showHun()) {
             img = new OverlayImages(img, listOfClients[i].getImage());
             i++;
         }
@@ -65,13 +65,32 @@ public class DeliverOrders extends World {
             return new MakeOrders(this.listOfClients);
         }
         
-        return this;
+        else {
+            int i = 0;
+            Posn pos;
+            while (i<listOfClients.length) {
+                pos = listOfClients[i].getPosition();
+                if (loc.insideHalf(this.listOfClients[i].getImage())) {
+                    if (this.done.equals(listOfClients[i].getOrder())) {
+                        System.out.println("Right!");
+                        this.listOfClients[i].dontShow();
+                    }
+                    else {
+                        System.out.println("Wrong!");
+                    }
+                }
+                i++;
+            }
+
+            return this;
+        }
+
     }
     
     public boolean equals(World w) {
-        if(w instanceof DeliverOrders) {
+        if (w instanceof DeliverOrders) {
             return Arrays.equals(this.listOfClients, ((DeliverOrders)w).listOfClients) &&
-                   Arrays.equals(this.listOfOrders,  ((DeliverOrders)w).listOfOrders);
+                   this.done.equals(((DeliverOrders)w).done);
         }
         
         return false;

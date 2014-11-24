@@ -20,6 +20,9 @@ public interface Client {
     //public Posn getBalloonPosition();
     public boolean equals(Client c);
     
+    public boolean showHun();
+    public void dontShow();
+    
 }
 
 class kid implements Client {
@@ -30,6 +33,7 @@ class kid implements Client {
     private final Order order;
     
     private final FromFileImage balloon;
+    private boolean show = true;
     
     kid() {
         this.position = new Posn(750,600);
@@ -62,6 +66,16 @@ class kid implements Client {
     @Override
     public boolean equals(Client c) {
         return (this.order.equals(c.getOrder()) && this.position.equals(c.getPosition()));
+    }
+    
+    @Override
+    public boolean showHun() {
+        return this.show;
+    }
+    
+    @Override
+    public void dontShow() {
+        this.show = false;
     }
     
 }

@@ -49,7 +49,7 @@ public class Test {
         //check_TakeOrders(deliver);
         
         MakeOrders make = new MakeOrders(take.listOfClients);
-        DeliverOrders deliver = new DeliverOrders(make.listOfClients, make.listOfOrders);
+        DeliverOrders deliver = new DeliverOrders(make.listOfClients, make.beingMade);
         
         Posn pos = randomPos();
         // System.out.println("Pos: (" + pos.x + "," + pos.y + ")");
@@ -64,7 +64,7 @@ public class Test {
                 throw new RuntimeException("ERROR IN: check_transitions (takeOrders -> makeOrders)");
         }
         
-        if (pos.inside(make.box)) {
+        if (pos.inside(make.boxRight)) {
             if (deliver.equals(make.onMouseClicked(pos))) {
                 deliver.bigBang(900,900,1);
                 //check_DeliverOrders(deliver);

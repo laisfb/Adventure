@@ -19,24 +19,13 @@ public interface Food {
     public Posn getPosition();
     public void setPosition(Posn pos);
     public boolean equals(Food f);
-    public String toString();
 }
 
-class Pizza implements Food {
+abstract class GenericFood implements Food {
     
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\food\\";
     private Posn position;
     
-    // pos : the position of the balloon
-    Pizza(Posn pos) {
-        this.position = new Posn(pos.x - 80, pos.y - 70);
-    }
-
-    @Override
-    public WorldImage getImage() {
-        return new FromFileImage(this.position, str + "pizza.gif");
-    }
-
     @Override
     public Posn getPosition() {
         return this.position;
@@ -50,7 +39,24 @@ class Pizza implements Food {
     // FromFileImage has a methods "equals"
     @Override
     public boolean equals(Food f) {
-        return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+        return ( ( (FromFileImage)this.getImage() ).fileName ).equals( ((FromFileImage)f.getImage()).fileName );
+    }
+    
+    public String getStr() {
+        return str;
+    }
+}
+
+class Pizza extends GenericFood {
+    
+    // pos : the position of the balloon
+    Pizza(Posn pos) {
+        this.setPosition(new Posn(pos.x - 80, pos.y - 70));
+    }
+
+    @Override
+    public WorldImage getImage() {
+        return new FromFileImage(this.getPosition(), getStr() + "pizza.gif");
     }
     
     @Override
@@ -59,35 +65,16 @@ class Pizza implements Food {
     }
 }
 
-class HotDog implements Food {
-    
-    private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\food\\";
-    private Posn position;
+class HotDog extends GenericFood {
     
     // pos : the position of the balloon
     HotDog(Posn pos) {
-        this.position = new Posn(pos.x - 10, pos.y - 70);
+        this.setPosition(new Posn(pos.x - 10, pos.y - 70));
     }
 
     @Override
     public WorldImage getImage() {
-        return new FromFileImage(this.position, str + "hotdog.png");
-    }
-
-    @Override
-    public Posn getPosition() {
-        return this.position;
-    }
-
-    @Override
-    public void setPosition(Posn pos) {
-        this.position = pos;
-    }
-    
-    // FromFileImage has a methods "equals"
-    @Override
-    public boolean equals(Food f) {
-        return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+        return new FromFileImage(this.getPosition(), getStr() + "hotdog.png");
     }
     
     @Override
@@ -96,35 +83,16 @@ class HotDog implements Food {
     }
 }
 
-class Hamburger implements Food {
-    
-    private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\food\\";
-    private Posn position;
+class Hamburger extends GenericFood {
     
     // pos : the position of the balloon
     Hamburger(Posn pos) {
-        this.position = new Posn(pos.x + 45, pos.y - 70);
+        this.setPosition(new Posn(pos.x + 45, pos.y - 70));
     }
 
     @Override
     public WorldImage getImage() {
-        return new FromFileImage(this.position, str + "hamburger.png");
-    }
-
-    @Override
-    public Posn getPosition() {
-        return this.position;
-    }
-
-    @Override
-    public void setPosition(Posn pos) {
-        this.position = pos;
-    }
-    
-    // FromFileImage has a methods "equals"
-    @Override
-    public boolean equals(Food f) {
-        return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+        return new FromFileImage(this.getPosition(), getStr() + "hamburger.png");
     }
     
     @Override
@@ -133,35 +101,16 @@ class Hamburger implements Food {
     }
 }
 
-class Fries implements Food {
-    
-    private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\food\\";
-    private Posn position;
+class Fries extends GenericFood {
     
     // pos : the position of the balloon
     Fries(Posn pos) {
-        this.position = new Posn(pos.x + 100, pos.y - 65);
+        this.setPosition(new Posn(pos.x + 100, pos.y - 65));
     }
 
     @Override
     public WorldImage getImage() {
-        return new FromFileImage(this.position, str + "fries.png");
-    }
-
-    @Override
-    public Posn getPosition() {
-        return this.position;
-    }
-
-    @Override
-    public void setPosition(Posn pos) {
-        this.position = pos;
-    }
-    
-    // FromFileImage has a methods "equals"
-    @Override
-    public boolean equals(Food f) {
-        return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+        return new FromFileImage(this.getPosition(), getStr() + "fries.png");
     }
     
     @Override
@@ -169,35 +118,16 @@ class Fries implements Food {
         return "FRIES";
     }
 }
-class Sandwich implements Food {
-    
-    private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\food\\";
-    private Posn position;
+class Sandwich extends GenericFood {
     
     // pos : the position of the balloon
     Sandwich(Posn pos) {
-        this.position = new Posn(pos.x - 25, pos.y);
+        this.setPosition(new Posn(pos.x - 25, pos.y));
     }
 
     @Override
     public WorldImage getImage() {
-        return new FromFileImage(this.position, str + "sandwich.png");
-    }
-
-    @Override
-    public Posn getPosition() {
-        return this.position;
-    }
-
-    @Override
-    public void setPosition(Posn pos) {
-        this.position = pos;
-    }
-    
-    // FromFileImage has a methods "equals"
-    @Override
-    public boolean equals(Food f) {
-        return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+        return new FromFileImage(this.getPosition(), getStr() + "sandwich.png");
     }
     
     @Override
@@ -206,35 +136,16 @@ class Sandwich implements Food {
     }
 }
 
-class Cookies implements Food {
-    
-    private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\food\\";
-    private Posn position;
+class Cookies extends GenericFood {
     
     // pos : the position of the balloon
     Cookies(Posn pos) {
-        this.position = new Posn(pos.x + 45, pos.y - 25);
+        this.setPosition(new Posn(pos.x + 45, pos.y - 25));
     }
 
     @Override
     public WorldImage getImage() {
-        return new FromFileImage(this.position, str + "cookies.png");
-    }
-
-    @Override
-    public Posn getPosition() {
-        return this.position;
-    }
-
-    @Override
-    public void setPosition(Posn pos) {
-        this.position = pos;
-    }
-    
-    // FromFileImage has a methods "equals"
-    @Override
-    public boolean equals(Food f) {
-        return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+        return new FromFileImage(this.getPosition(), getStr() + "cookies.png");
     }
     
     @Override
@@ -243,35 +154,16 @@ class Cookies implements Food {
     }
 }
 
-class Coffee implements Food {
-    
-    private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\food\\";
-    private Posn position;
+class Coffee extends GenericFood {
     
     // pos : the position of the balloon
     Coffee(Posn pos) {
-        this.position = new Posn(pos.x + 45, pos.y + 20);
+        this.setPosition(new Posn(pos.x + 45, pos.y + 20));
     }
 
     @Override
     public WorldImage getImage() {
-        return new FromFileImage(this.position, str + "coffee.png");
-    }
-
-    @Override
-    public Posn getPosition() {
-        return this.position;
-    }
-
-    @Override
-    public void setPosition(Posn pos) {
-        this.position = pos;
-    }
-    
-    // FromFileImage has a methods "equals"
-    @Override
-    public boolean equals(Food f) {
-        return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+        return new FromFileImage(this.getPosition(), getStr() + "coffee.png");
     }
     
     @Override
@@ -280,35 +172,16 @@ class Coffee implements Food {
     }
 }
 
-class Soda implements Food {
-    
-    private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\food\\";
-    private Posn position;
+class Soda extends GenericFood {
     
     // pos : the position of the balloon
     Soda(Posn pos) {
-        this.position = new Posn(pos.x - 90, pos.y - 10);
+        this.setPosition(new Posn(pos.x - 90, pos.y - 10));
     }
 
     @Override
     public WorldImage getImage() {
-        return new FromFileImage(this.position, str + "soda.png");
-    }
-
-    @Override
-    public Posn getPosition() {
-        return this.position;
-    }
-
-    @Override
-    public void setPosition(Posn pos) {
-        this.position = pos;
-    }
-    
-    // FromFileImage has a methods "equals"
-    @Override
-    public boolean equals(Food f) {
-        return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+        return new FromFileImage(this.getPosition(), getStr() + "soda.png");
     }
     
     @Override
@@ -317,35 +190,16 @@ class Soda implements Food {
     }
 }
 
-class Milk implements Food {
-    
-    private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\food\\";
-    private Posn position;
+class Milk extends GenericFood {
     
     // pos : the position of the balloon
     Milk(Posn pos) {
-        this.position = new Posn(pos.x + 100, pos.y);
+        this.setPosition(new Posn(pos.x + 100, pos.y));
     }
 
     @Override
     public WorldImage getImage() {
-        return new FromFileImage(this.position, str + "milk.png");
-    }
-
-    @Override
-    public Posn getPosition() {
-        return this.position;
-    }
-
-    @Override
-    public void setPosition(Posn pos) {
-        this.position = pos;
-    }
-    
-    // FromFileImage has a methods "equals"
-    @Override
-    public boolean equals(Food f) {
-        return ( (FromFileImage)this.getImage() ).equals(f.getImage());
+        return new FromFileImage(this.getPosition(), getStr() + "milk.png");
     }
     
     @Override

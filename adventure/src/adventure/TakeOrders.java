@@ -23,8 +23,6 @@ public class TakeOrders extends World {
     boolean showOrders;
     int time;
     
-    public static Food[] everyFood;
-    
     RectangleImage box;
     
     TakeOrders(int level) {

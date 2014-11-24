@@ -20,37 +20,26 @@ public class MakeOrders extends World {
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
 
     Client[] listOfClients;
-    Order[] listOfOrders;
+    Order beingMade;
     
-    RectangleImage box;
-    Posn[] boxPosition = new Posn[9];
+    RectangleImage boxRight;
+    RectangleImage boxLeft;
+    Posn[] boxesPositions = new Posn[9];
     FromFileImage[] boxes = new FromFileImage[9];
     
     MakeOrders(Client[] clients) {
         this.listOfClients = clients;
-        this.listOfOrders = new Order[clients.length];
+        
+        this.beingMade = new Order(new Food[0]);
         
         int k = 0;
-        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
+        this.boxRight = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
+        this.boxLeft = new RectangleImage(new Posn(90, 846), 150, 40, Color.ORANGE);
         for(int i=0; i<3; i++)
             for(int j=0; j<3; j++) {
                 k = 3*i + j;
-                boxPosition[k] = new Posn(300*i + 150, 250*j + 120);
-                boxes[k] = new FromFileImage(boxPosition[k], str + "box.png");
-            }
-    }
-    
-    MakeOrders(Client[] clients, Order[] orders) {
-        this.listOfClients = clients;
-        this.listOfOrders = orders;
-        
-        int k = 0;
-        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
-        for(int i=0; i<3; i++)
-            for(int j=0; j<3; j++) {
-                k = 3*i + j;
-                boxPosition[k] = new Posn(300*i + 150, 250*j + 120);
-                boxes[k] = new FromFileImage(boxPosition[k], str + "box.png");
+                boxesPositions[k] = new Posn(300*i + 150, 250*j + 120);
+                boxes[k] = new FromFileImage(boxesPositions[k], str + "box.png");
             }
     }
     
@@ -61,7 +50,14 @@ public class MakeOrders extends World {
         text.size = 15;
         text.style = 1;
         
-        OverlayImages img = new OverlayImages(bg, this.box);
+        OverlayImages img = new OverlayImages(bg, this.boxRight);
+        img = new OverlayImages(img, text);
+        
+        img = new OverlayImages(img, this.boxLeft);
+
+        text = new TextImage(new Posn(80, 850), "START OVER", Color.BLACK);
+        text.size = 15;
+        text.style = 1;
         img = new OverlayImages(img, text);
         
         FromFileImage box;
@@ -70,11 +66,21 @@ public class MakeOrders extends World {
             img = new OverlayImages(img, boxes[i]);
                 
             name = Order.everyFood[i].toString();
-            text = new TextImage(new Posn(boxPosition[i].x - 2*name.length() - 8, boxPosition[i].y + 30), name, Color.BLACK);
+            text = new TextImage(new Posn(boxesPositions[i].x - 2*name.length() - 8, boxesPositions[i].y + 30), name, Color.BLACK);
             text.size = 20;
             text.style = 1;
 
             img = new OverlayImages(img, text);
+        }
+        
+        RectangleImage whiteBox = new RectangleImage(new Posn(450, 850), 500, 80, Color.WHITE);
+        img = new OverlayImages(img, whiteBox);
+        
+        FromFileImage food;
+        for(int i=0; i<this.beingMade.size; i++) {
+            food = (FromFileImage)this.beingMade.listOfFood[i].getImage();
+            food.pinhole = new Posn(250 + i*70, 850);
+            img = new OverlayImages(img, food);
         }
         
         return img;
@@ -84,19 +90,28 @@ public class MakeOrders extends World {
     public World onMouseClicked(Posn loc) {
         
         // If clicked whithin the box of "deliver orders"
-        if (loc.inside(this.box)) {
+        if (loc.inside(this.boxRight)) {
             System.out.println("Deliver the food.");
-            return new DeliverOrders(this.listOfClients, this.listOfOrders);
+            return new DeliverOrders(this.listOfClients, this.beingMade);
         }
+        
+        else if (loc.inside(this.boxLeft)) {
+            System.out.println("Starting Over.");        
+            this.beingMade = new Order(new Food[0]);          
+        }
+        
         else {
             int j=0;
             for(int i=0; i<9; i++) {
                 if (loc.inside(boxes[i])) {
-                    System.out.println(Order.everyFood[i].toString());
+                    this.beingMade = this.beingMade.addFood(this.beingMade.everyFood[i]);
+                    
+                    //System.out.println(Order.everyFood[i].toString());
                 }
             }
         }
         
+        //System.out.println("Size: " + this.beingMade.size);        
         return this;
     }
     
@@ -104,7 +119,7 @@ public class MakeOrders extends World {
     public boolean equals(World w) {
         if(w instanceof MakeOrders) {
             return Arrays.equals(this.listOfClients, ((MakeOrders)w).listOfClients) &&
-                   Arrays.equals(this.listOfOrders,  ((MakeOrders)w).listOfOrders);
+                   beingMade.equals(((MakeOrders)w).beingMade);
         }
         
         return false;
