@@ -19,6 +19,7 @@ public interface Food {
     public Posn getPosition();
     public void setPosition(Posn pos);
     public boolean equals(Food f);
+    public boolean isOn(Food[] list, int size);
 }
 
 abstract class GenericFood implements Food {
@@ -44,6 +45,13 @@ abstract class GenericFood implements Food {
     
     public String getStr() {
         return str;
+    }
+    
+    public boolean isOn(Food[] list, int size) {
+        for(int i=0; i<size; i++)
+            if(list[i].equals(this))
+                return true;
+        return false;
     }
 }
 
@@ -83,21 +91,21 @@ class HotDog extends GenericFood {
     }
 }
 
-class Hamburger extends GenericFood {
+class Burger extends GenericFood {
     
     // pos : the position of the balloon
-    Hamburger(Posn pos) {
+    Burger(Posn pos) {
         this.setPosition(new Posn(pos.x + 45, pos.y - 70));
     }
 
     @Override
     public WorldImage getImage() {
-        return new FromFileImage(this.getPosition(), getStr() + "hamburger.png");
+        return new FromFileImage(this.getPosition(), getStr() + "burger.png");
     }
     
     @Override
     public String toString() {
-        return "HAMBURGER";
+        return "BURGER";
     }
 }
 

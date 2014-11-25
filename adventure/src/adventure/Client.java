@@ -5,77 +5,163 @@
  */
 package adventure;
 
+import java.util.Random;
 import javalib.worldimages.*;
 
 /**
  *
  * @author laisfb
  */
-public interface Client {
-    
-    public Order getOrder();
-    public WorldImage getImage();
-    public Posn getPosition();
-    public FromFileImage getBalloon();
-    //public Posn getBalloonPosition();
-    public boolean equals(Client c);
-    
-    public boolean showHun();
-    public void dontShow();
-    
-}
 
-class kid implements Client {
+abstract class Client {
     
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
     
-    private final Posn position;
-    private final Order order;
+    private Order order;
+    private Posn position;
     
-    private final FromFileImage balloon;
+    private FromFileImage balloon;    
+    FromFileImage picture;
+    
     private boolean show = true;
+    private boolean showOrder = true;
     
-    kid() {
-        this.position = new Posn(750,600);
-        
-        Posn pos = new Posn(this.position.x, this.position.y - 300);
-        this.balloon = new FromFileImage(pos, str + "balloon.png");
-        this.order = new Order(this.balloon.pinhole);
+    public String getStr() {
+        return this.str;
     }
     
-    @Override
     public Order getOrder() {
         return this.order;
     }
-
-    @Override
-    public WorldImage getImage() {
-        return new FromFileImage(this.position, str + "kid.png");
+    
+    public void setOrder(Order o) {
+        this.order = o;
     }
     
-    @Override
     public Posn getPosition() {
         return this.position;
     }
     
-    @Override
+    public void setPosition(Posn pos) {
+        this.position = pos;
+    }
+    
     public FromFileImage getBalloon() {
         return this.balloon;
     }
     
-    @Override
-    public boolean equals(Client c) {
-        return (this.order.equals(c.getOrder()) && this.position.equals(c.getPosition()));
+    public void setBalloon(FromFileImage img) {
+        this.balloon = img;
+    }
+
+    public WorldImage getImage() {
+        return this.picture;
     }
     
-    @Override
+    public void setImage(FromFileImage img) {
+        this.picture = img;
+    }
+    
     public boolean showHun() {
         return this.show;
     }
     
-    @Override
     public void dontShow() {
         this.show = false;
+    }
+    
+    public boolean showOrderHun() {
+        return this.showOrder;
+    }
+    
+    public void showOrder() {
+        this.showOrder = true;
+    }
+    
+    public void dontShowOrder() {
+        this.showOrder = false;
+    }
+    
+    public static int randomInt(int max) {
+	Random r = new Random();
+	return (r.nextInt(max));
+    }
+    
+    public boolean equals(Client c) {
+        return (this.order.equals(c.getOrder()) && this.position.equals(c.getPosition()));
+    }
+    
+    public static Client randomClient(int level) {
+        int x = randomInt(3);
+        if (x==0)
+            return new man(level);
+        
+        else if (x==1)
+            return new woman(level);
+        
+        else if (x==2)
+            return new kid(level);
+        
+        else
+            throw new RuntimeException("ERROR IN: randomClient");
+    }
+}
+
+class man extends Client {
+        
+    FromFileImage[] men = new FromFileImage[2];
+    
+    man(int level) {
+        this.setPosition(new Posn(150,550));
+        
+        Posn pos = new Posn(this.getPosition().x, this.getPosition().y - 330);
+        this.setBalloon(new FromFileImage(pos, this.getStr() + "balloon.png"));
+        this.setOrder(new Order(this.getBalloon().pinhole, level));
+        
+        this.men[0] = new FromFileImage(this.getPosition(), this.getStr() + "man1.png");
+        this.men[1] = new FromFileImage(this.getPosition(), this.getStr() + "man2.png");
+        
+        this.setImage(this.men[randomInt(2)]);
+    }
+    
+}
+
+class woman extends Client {
+        
+    FromFileImage[] women = new FromFileImage[2];
+    
+    woman(int level) {
+        this.setPosition(new Posn(455,520));
+        
+        Posn pos = new Posn(this.getPosition().x, this.getPosition().y - 300);
+        this.setBalloon(new FromFileImage(pos, this.getStr() + "balloon.png"));
+        this.setOrder(new Order(this.getBalloon().pinhole, level));
+        
+        this.women[0] = new FromFileImage(this.getPosition(), this.getStr() + "woman1.png");
+        this.women[1] = new FromFileImage(this.getPosition(), this.getStr() + "woman2.png");
+        
+        this.setImage(this.women[randomInt(2)]);
+    }
+    
+}
+
+class kid extends Client {
+        
+    FromFileImage[] kids = new FromFileImage[4];
+    
+    kid(int level) {
+        this.setPosition(new Posn(750,600));
+        
+        Posn pos = new Posn(this.getPosition().x, this.getPosition().y - 300);
+        this.setBalloon(new FromFileImage(pos, this.getStr() + "balloon.png"));
+        this.setOrder(new Order(this.getBalloon().pinhole, level));
+        
+        this.kids[0] = new FromFileImage(this.getPosition(), this.getStr() + "kid1.png");
+        this.kids[1] = new FromFileImage(this.getPosition(), this.getStr() + "kid2.png");
+        this.kids[2] = new FromFileImage(this.getPosition(), this.getStr() + "kid3.png");
+        this.kids[3] = new FromFileImage(this.getPosition(), this.getStr() + "kid4.png");
+        
+        this.setImage(this.kids[randomInt(4)]);
     }
     
 }

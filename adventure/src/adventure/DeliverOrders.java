@@ -20,14 +20,16 @@ public class DeliverOrders extends World {
 
     Client[] listOfClients;
     Order done;
+    int LEVEL;
     
     RectangleImage box;
     
-    boolean gameOver = false;
+    int level;
     
-    DeliverOrders(Client[] listOfClients, Order beingMade) {
+    DeliverOrders(Client[] listOfClients, Order beingMade, int level) {
         this.listOfClients = listOfClients;        
         this.done = beingMade;
+        this.LEVEL = level;
         //System.out.println("Order size: " + this.done.size);
         this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
     }
@@ -62,7 +64,7 @@ public class DeliverOrders extends World {
         // If clicked whithin the box of "make orders"
         if (loc.inside(this.box)) {
             System.out.println("Go to kitchen.");
-            return new MakeOrders(this.listOfClients);
+            return new MakeOrders(this.listOfClients, this.LEVEL);
         }
         
         else {
@@ -82,7 +84,18 @@ public class DeliverOrders extends World {
                 i++;
             }
 
-            return this;
+            for (i=0; i<listOfClients.length; i++) {
+                if (this.listOfClients[i].showHun())
+                    return this;
+            }
+            
+            if (this.LEVEL == 5) {
+                return new nextLevel(-1, 0);
+            }
+            
+            else {
+                return new nextLevel(this.LEVEL + 1, 0);
+            }
         }
 
     }

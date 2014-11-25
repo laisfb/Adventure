@@ -1,7 +1,5 @@
 package javalib.worldimages;
 
-import static java.lang.Math.abs;
-
 /**
  * To represent a point on the drawing 
  * <CODE>WorldCanvas</CODE> or <CODE>AppletCanvaas</CODE>
@@ -31,7 +29,7 @@ public class Posn {
       return this.x > pos.x - width/2 &&
              this.x < pos.x + width/2 &&
              this.y > pos.y - height/2 &&
-             this.y < pos.y;
+             this.y < 640 ;
   }
   
   // Method used to check if the mouse click was inside the image

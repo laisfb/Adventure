@@ -5,7 +5,6 @@
  */
 package adventure;
 
-import java.util.Arrays;
 import java.util.Random;
 import javalib.worldimages.Posn;
 
@@ -15,23 +14,33 @@ import javalib.worldimages.Posn;
  */
 public class Order {
     
-    static Food[] everyFood;
+    public static Food[] everyFood;
     
-    Food[] listOfFood;
-    int size;
-    static Posn balloon;
+    public Food[] listOfFood;
+    public int size;
+    public static Posn balloon;
     
     // pos : the position of the balloon
-    Order(Posn pos) {
+    Order(Posn pos, int level) {
         
-        this.size  = randomInt(5) + 1;
-        this.listOfFood = new Food[size];
+        if(level < 3)
+            this.size = 3;
+        else
+            this.size = level;
+        
+        this.listOfFood = new Food[this.size];
         
         this.balloon = pos;
         this.everyFood = createListOfFood();
         
-        for(int i=0; i<this.size; i++)
-            this.listOfFood[i] = randomFood();
+        Food f;
+        this.listOfFood[0] = randomFood();
+        for(int i=1; i<this.size; i++) {
+            f = randomFood();
+            while (f.isOn(this.listOfFood,i))
+                f = randomFood();
+            this.listOfFood[i] = f;
+        }
         
         // Use only for test
         //this.size = 9;
@@ -55,6 +64,7 @@ public class Order {
     
     public Order addFood(Food f) {
         Food[] newList = new Food[size+1];
+        
         for(int i=0; i<size; i++)
             newList[i] = this.listOfFood[i];
         
@@ -78,16 +88,16 @@ public class Order {
     // pos : the position of the balloon
     public static Food[] createListOfFood() {
         Posn pos = Order.balloon;
-        Food[] everyFood = new Food[9];
+        everyFood = new Food[9];
         
         everyFood[0] = new Pizza(pos);
         everyFood[1] = new HotDog(pos);
-        everyFood[2] = new Hamburger(pos);
+        everyFood[2] = new Burger(pos);
         everyFood[3] = new Fries(pos);
-        everyFood[4] = new Soda(pos);        
+        everyFood[4] = new Soda(pos);
         everyFood[5] = new Sandwich(pos);
-        everyFood[6] = new Cookies(pos);        
-        everyFood[7] = new Coffee(pos);        
+        everyFood[6] = new Coffee(pos);
+        everyFood[7] = new Cookies(pos);
         everyFood[8] = new Milk(pos);
         
         return everyFood;

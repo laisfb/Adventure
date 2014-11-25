@@ -48,8 +48,8 @@ public class Test {
         take.bigBang(900,900,1);
         //check_TakeOrders(deliver);
         
-        MakeOrders make = new MakeOrders(take.listOfClients);
-        DeliverOrders deliver = new DeliverOrders(make.listOfClients, make.beingMade);
+        MakeOrders make = new MakeOrders(take.listOfClients,1);
+        DeliverOrders deliver = new DeliverOrders(make.listOfClients, make.beingMade,1);
         
         Posn pos = randomPos();
         // System.out.println("Pos: (" + pos.x + "," + pos.y + ")");

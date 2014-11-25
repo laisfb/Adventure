@@ -6,7 +6,6 @@
 package adventure;
 
 import java.awt.Color;
-import java.util.List;
 import java.util.Arrays;
 import javalib.funworld.*;
 import javalib.worldimages.*;
@@ -18,6 +17,7 @@ import javalib.worldimages.*;
 public class MakeOrders extends World {
 
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
+    int LEVEL;
 
     Client[] listOfClients;
     Order beingMade;
@@ -27,8 +27,9 @@ public class MakeOrders extends World {
     Posn[] boxesPositions = new Posn[9];
     FromFileImage[] boxes = new FromFileImage[9];
     
-    MakeOrders(Client[] clients) {
+    MakeOrders(Client[] clients, int level) {
         this.listOfClients = clients;
+        this.LEVEL = level;
         
         this.beingMade = new Order(new Food[0]);
         
@@ -38,7 +39,7 @@ public class MakeOrders extends World {
         for(int i=0; i<3; i++)
             for(int j=0; j<3; j++) {
                 k = 3*i + j;
-                boxesPositions[k] = new Posn(300*i + 150, 250*j + 120);
+                boxesPositions[k] = new Posn(300*j + 150, 250*i + 120);
                 boxes[k] = new FromFileImage(boxesPositions[k], str + "box.png");
             }
     }
@@ -92,7 +93,7 @@ public class MakeOrders extends World {
         // If clicked whithin the box of "deliver orders"
         if (loc.inside(this.boxRight)) {
             System.out.println("Deliver the food.");
-            return new DeliverOrders(this.listOfClients, this.beingMade);
+            return new DeliverOrders(this.listOfClients, this.beingMade, this.LEVEL);
         }
         
         else if (loc.inside(this.boxLeft)) {
