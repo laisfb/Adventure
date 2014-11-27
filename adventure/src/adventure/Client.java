@@ -87,8 +87,9 @@ abstract class Client {
 	return (r.nextInt(max));
     }
     
+    // They are considered equal if their image is the same
     public boolean equals(Client c) {
-        return (this.order.equals(c.getOrder()) && this.position.equals(c.getPosition()));
+        return (((FromFileImage)this.getImage()).fileName).equals(((FromFileImage)c.getImage()).fileName);
     }
     
     public static Client randomClient(int level) {

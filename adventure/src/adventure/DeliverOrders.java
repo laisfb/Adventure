@@ -25,11 +25,24 @@ public class DeliverOrders extends World {
     RectangleImage box;
     
     int level;
+    int time = 0;
     
     DeliverOrders(Client[] listOfClients, Order beingMade, int level) {
         this.listOfClients = listOfClients;        
         this.done = beingMade;
         this.LEVEL = level;
+        //System.out.println("Order size: " + this.done.size);
+        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
+        
+        for (int i=0; i<listOfClients.length; i++)
+            listOfClients[i].dontShowOrder();
+    }
+    
+    DeliverOrders(Client[] listOfClients, Order beingMade, int level, int time) {
+        this.listOfClients = listOfClients;        
+        this.done = beingMade;
+        this.LEVEL = level;
+        this.time = time;
         //System.out.println("Order size: " + this.done.size);
         this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
     }
@@ -41,15 +54,47 @@ public class DeliverOrders extends World {
         FromFileImage counter = new FromFileImage(new Posn(450,950), str + "countertop.png");
         OverlayImages img = new OverlayImages(bg, bg);
         
+        TextImage text;
+        
         int i=0;
-        while (i<listOfClients.length && listOfClients[i].showHun()) {
-            img = new OverlayImages(img, listOfClients[i].getImage());
+        while (i<listOfClients.length) {
+            if (listOfClients[i].showHun()) {
+                img = new OverlayImages(img, listOfClients[i].getImage());
+
+                if (listOfClients[i].showOrderHun()) {
+                    FromFileImage balloon;
+
+                    int size;
+                    Food[] order;
+                    WorldImage food;
+
+                    balloon = listOfClients[i].getBalloon();
+                    img = new OverlayImages(img, balloon);
+
+                    size = listOfClients[i].getOrder().getSize();
+                    order = listOfClients[i].getOrder().getFood();
+
+                    int j = 0;
+                    while (j<size) {
+                        food = order[j].getImage();
+                        img = new OverlayImages(img, food);
+                        j++;
+
+                        int x = food.pinhole.x + 25;
+                        int y = food.pinhole.y + food.getHeight()/2;
+                        text = new TextImage(new Posn(x, y), j + "", Color.BLACK);
+                        text.size = 15;
+                        text.style = 1;
+                        img = new OverlayImages(img, text);
+                    }
+                }
+            }
             i++;
         }
         
         img = new OverlayImages(img, counter);
         
-        TextImage text = new TextImage(new Posn(800, 850), "MAKE ORDERS", Color.BLACK);
+        text = new TextImage(new Posn(800, 850), "MAKE ORDERS", Color.BLACK);
         text.size = 15;
         text.style = 1;
         
@@ -72,13 +117,23 @@ public class DeliverOrders extends World {
             Posn pos;
             while (i<listOfClients.length) {
                 pos = listOfClients[i].getPosition();
+                
                 if (loc.insideHalf(this.listOfClients[i].getImage())) {
-                    if (this.done.equals(listOfClients[i].getOrder())) {
-                        System.out.println("Right!");
-                        this.listOfClients[i].dontShow();
+                    
+                    if (done.getSize() == 0) {
+                        System.out.println("Empty order!");
+                        this.listOfClients[i].showOrder();
+                        return new DeliverOrders(this.listOfClients, this.done, this.LEVEL, 0); 
                     }
+                    
+                    else if (this.done.equals(listOfClients[i].getOrder())) {
+                            System.out.println("Right order!");
+                            this.listOfClients[i].dontShow();
+                            this.done = new Order(new Food[0]);
+                    }
+                    
                     else {
-                        System.out.println("Wrong!");
+                        System.out.println("Wrong order!");
                     }
                 }
                 i++;
@@ -86,16 +141,10 @@ public class DeliverOrders extends World {
 
             for (i=0; i<listOfClients.length; i++) {
                 if (this.listOfClients[i].showHun())
-                    return this;
+                    return new DeliverOrders(this.listOfClients, this.done, this.LEVEL);
             }
             
-            if (this.LEVEL == 5) {
-                return new nextLevel(-1, 0);
-            }
-            
-            else {
-                return new nextLevel(this.LEVEL + 1, 0);
-            }
+            return new nextLevel(this.LEVEL + 1, 0);
         }
 
     }
@@ -107,6 +156,17 @@ public class DeliverOrders extends World {
         }
         
         return false;
+    }
+    
+    @Override
+    public World onTick() {
+        
+        if (this.time >= 3) {
+            for (int i=0; i<listOfClients.length; i++)
+               listOfClients[i].dontShowOrder();
+        }
+        
+        return new DeliverOrders(this.listOfClients, this.done, this.LEVEL, this.time + 1);
     }
     
 }

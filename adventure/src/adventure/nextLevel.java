@@ -31,13 +31,13 @@ public class nextLevel extends World {
     @Override
     public WorldImage makeImage() {
         
-        if (this.LEVEL != -1) {
-            TextImage text1 = new TextImage(new Posn(300, 400), "LEVEL " + this.LEVEL, Color.BLACK);
+        if (this.LEVEL == 6) {
+            TextImage text1 = new TextImage(new Posn(300, 400), "GAME OVER", Color.BLACK);
             text1.size = 100;
             text1.style = 1;
             
-            TextImage text2 = new TextImage(new Posn(300, 500), "SCORE: " + this.SCORE, Color.BLACK);
-            text2.size = 80;
+            TextImage text2 = new TextImage(new Posn(300, 500), "TOTAL SCORE: " + this.SCORE, Color.BLACK);
+            text2.size = 60;
             text2.style = 1;
             
             OverlayImages text = new OverlayImages(text1, text2);
@@ -46,12 +46,12 @@ public class nextLevel extends World {
         }
         
         else {
-            TextImage text1 = new TextImage(new Posn(300, 400), "GAME OVER", Color.BLACK);
+            TextImage text1 = new TextImage(new Posn(280, 400), "LEVEL " + this.LEVEL, Color.BLACK);
             text1.size = 100;
             text1.style = 1;
             
-            TextImage text2 = new TextImage(new Posn(300, 500), "TOTAL SCORE: " + this.SCORE, Color.BLACK);
-            text2.size = 60;
+            TextImage text2 = new TextImage(new Posn(300, 500), "SCORE: " + this.SCORE, Color.BLACK);
+            text2.size = 80;
             text2.style = 1;
             
             OverlayImages text = new OverlayImages(text1, text2);

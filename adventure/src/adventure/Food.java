@@ -37,10 +37,10 @@ abstract class GenericFood implements Food {
         this.position = pos;
     }
     
-    // FromFileImage has a methods "equals"
+    // They are considered equal if their image is the same
     @Override
     public boolean equals(Food f) {
-        return ( ( (FromFileImage)this.getImage() ).fileName ).equals( ((FromFileImage)f.getImage()).fileName );
+        return (((FromFileImage)this.getImage()).fileName).equals(((FromFileImage)f.getImage()).fileName);
     }
     
     public String getStr() {
@@ -48,8 +48,8 @@ abstract class GenericFood implements Food {
     }
     
     public boolean isOn(Food[] list, int size) {
-        for(int i=0; i<size; i++)
-            if(list[i].equals(this))
+        for (int i=0; i<size; i++)
+            if (list[i].equals(this))
                 return true;
         return false;
     }

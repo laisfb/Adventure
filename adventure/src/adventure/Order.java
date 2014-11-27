@@ -23,7 +23,7 @@ public class Order {
     // pos : the position of the balloon
     Order(Posn pos, int level) {
         
-        if(level < 3)
+        if (level < 3)
             this.size = 3;
         else
             this.size = level;
@@ -35,7 +35,7 @@ public class Order {
         
         Food f;
         this.listOfFood[0] = randomFood();
-        for(int i=1; i<this.size; i++) {
+        for (int i=1; i<this.size; i++) {
             f = randomFood();
             while (f.isOn(this.listOfFood,i))
                 f = randomFood();
@@ -50,8 +50,7 @@ public class Order {
      Order(Food[] list) {
         this.size = list.length;
         this.listOfFood = list;
-        
-       this.everyFood = createListOfFood();
+        this.everyFood = createListOfFood();
      }
     
     public int getSize() {
@@ -65,7 +64,7 @@ public class Order {
     public Order addFood(Food f) {
         Food[] newList = new Food[size+1];
         
-        for(int i=0; i<size; i++)
+        for (int i=0; i<size; i++)
             newList[i] = this.listOfFood[i];
         
         newList[size] = f;
@@ -77,7 +76,7 @@ public class Order {
         if (this.size != ord.size)
             return false;
         else {
-            for(int i=0; i<size; i++)
+            for (int i=0; i<size; i++)
                 if (!this.listOfFood[i].equals(ord.listOfFood[i]))
                     return false;
             

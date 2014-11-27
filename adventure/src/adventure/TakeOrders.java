@@ -77,10 +77,10 @@ public class TakeOrders extends World {
         TextImage text;
         
         int i=0;
-        while(i<listOfClients.length) {
+        while (i<listOfClients.length) {
             img = new OverlayImages(img, listOfClients[i].getImage());
             
-            if(listOfClients[i].showOrderHun()) {
+            if (listOfClients[i].showOrderHun()) {
                 FromFileImage balloon;
 
                 int size;
@@ -94,7 +94,7 @@ public class TakeOrders extends World {
                 order = listOfClients[i].getOrder().getFood();
 
                 int j = 0;
-                while(j<size) {
+                while (j<size) {
                     food = order[j].getImage();
                     img = new OverlayImages(img, food);
                     j++;
@@ -130,7 +130,7 @@ public class TakeOrders extends World {
                listOfClients[i].dontShowOrder();
         }
         
-        return new TakeOrders(this.LEVEL, this.listOfClients, time+1);
+        return new TakeOrders(this.LEVEL, this.listOfClients, this.time + 1);
     }
     
     @Override
@@ -145,7 +145,7 @@ public class TakeOrders extends World {
         else {
             int i = 0;
             Posn pos;
-            while(i<listOfClients.length) {
+            while (i<listOfClients.length) {
                 pos = listOfClients[i].getPosition();
                 // System.out.println("MouseClick: (" + loc.x + " , " + loc.y + ")");
                 // System.out.println("Client: (" + pos.x + " , " + pos.y + ")");

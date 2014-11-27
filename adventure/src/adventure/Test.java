@@ -22,7 +22,7 @@ public class Test {
     public static void main(String[] args) {
         
         // level , showOrders , time
-        if(!testingMode) {
+        if (!testingMode) {
             TakeOrders take = new TakeOrders(1);
             take.bigBang(900,900,1);
         }
@@ -49,7 +49,7 @@ public class Test {
         //check_TakeOrders(deliver);
         
         MakeOrders make = new MakeOrders(take.listOfClients,1);
-        DeliverOrders deliver = new DeliverOrders(make.listOfClients, make.beingMade,1);
+        DeliverOrders deliver = new DeliverOrders(make.listOfClients, make.beingMade, 1);
         
         Posn pos = randomPos();
         // System.out.println("Pos: (" + pos.x + "," + pos.y + ")");

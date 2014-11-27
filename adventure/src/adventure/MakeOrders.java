@@ -36,8 +36,8 @@ public class MakeOrders extends World {
         int k = 0;
         this.boxRight = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
         this.boxLeft = new RectangleImage(new Posn(90, 846), 150, 40, Color.ORANGE);
-        for(int i=0; i<3; i++)
-            for(int j=0; j<3; j++) {
+        for (int i=0; i<3; i++)
+            for (int j=0; j<3; j++) {
                 k = 3*i + j;
                 boxesPositions[k] = new Posn(300*j + 150, 250*i + 120);
                 boxes[k] = new FromFileImage(boxesPositions[k], str + "box.png");
@@ -63,7 +63,7 @@ public class MakeOrders extends World {
         
         FromFileImage box;
         String name;
-        for(int i=0; i<9; i++) {
+        for (int i=0; i<9; i++) {
             img = new OverlayImages(img, boxes[i]);
                 
             name = Order.everyFood[i].toString();
@@ -78,7 +78,7 @@ public class MakeOrders extends World {
         img = new OverlayImages(img, whiteBox);
         
         FromFileImage food;
-        for(int i=0; i<this.beingMade.size; i++) {
+        for (int i=0; i<this.beingMade.size; i++) {
             food = (FromFileImage)this.beingMade.listOfFood[i].getImage();
             food.pinhole = new Posn(250 + i*70, 850);
             img = new OverlayImages(img, food);
@@ -103,7 +103,7 @@ public class MakeOrders extends World {
         
         else {
             int j=0;
-            for(int i=0; i<9; i++) {
+            for (int i=0; i<9; i++) {
                 if (loc.inside(boxes[i])) {
                     this.beingMade = this.beingMade.addFood(this.beingMade.everyFood[i]);
                     
@@ -118,7 +118,7 @@ public class MakeOrders extends World {
     
     // Two "MakeOrders" are equal if they have the same list of clients and same list of orders made
     public boolean equals(World w) {
-        if(w instanceof MakeOrders) {
+        if (w instanceof MakeOrders) {
             return Arrays.equals(this.listOfClients, ((MakeOrders)w).listOfClients) &&
                    beingMade.equals(((MakeOrders)w).beingMade);
         }
