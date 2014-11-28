@@ -18,6 +18,7 @@ public class MakeOrders extends World {
 
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
     int LEVEL;
+    int SCORE;
 
     Client[] listOfClients;
     Order beingMade;
@@ -27,9 +28,10 @@ public class MakeOrders extends World {
     Posn[] boxesPositions = new Posn[9];
     FromFileImage[] boxes = new FromFileImage[9];
     
-    MakeOrders(Client[] clients, int level) {
+    MakeOrders(Client[] clients, int level, int score) {
         this.listOfClients = clients;
         this.LEVEL = level;
+        this.SCORE = score;
         
         this.beingMade = new Order(new Food[0]);
         
@@ -93,7 +95,7 @@ public class MakeOrders extends World {
         // If clicked whithin the box of "deliver orders"
         if (loc.inside(this.boxRight)) {
             System.out.println("Deliver the food.");
-            return new DeliverOrders(this.listOfClients, this.beingMade, this.LEVEL);
+            return new DeliverOrders(this.listOfClients, this.beingMade, this.LEVEL, 0, this.SCORE);
         }
         
         else if (loc.inside(this.boxLeft)) {

@@ -14,33 +14,33 @@ import javalib.worldimages.WorldImage;
  *
  * @author laisfb
  */
-public interface Food {
-    public WorldImage getImage();
-    public Posn getPosition();
-    public void setPosition(Posn pos);
-    public boolean equals(Food f);
-    public boolean isOn(Food[] list, int size);
-}
 
-abstract class GenericFood implements Food {
+class Food {
     
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\food\\";
     private Posn position;
+    public FromFileImage picture;
     
-    @Override
     public Posn getPosition() {
         return this.position;
     }
 
-    @Override
     public void setPosition(Posn pos) {
         this.position = pos;
     }
+
+    public WorldImage getImage() {
+        return this.picture;
+    }
+    
+    public void setImage(FromFileImage img) {
+        this.picture = img;
+    }
     
     // They are considered equal if their image is the same
-    @Override
     public boolean equals(Food f) {
-        return (((FromFileImage)this.getImage()).fileName).equals(((FromFileImage)f.getImage()).fileName);
+        return (this.picture.fileName).equals(f.picture.fileName);
+        //return (((FromFileImage)this.getImage()).fileName).equals(((FromFileImage)f.getImage()).fileName);
     }
     
     public String getStr() {
@@ -55,162 +55,117 @@ abstract class GenericFood implements Food {
     }
 }
 
-class Pizza extends GenericFood {
+class Pizza extends Food {
     
     // pos : the position of the balloon
     Pizza(Posn pos) {
         this.setPosition(new Posn(pos.x - 80, pos.y - 70));
-    }
-
-    @Override
-    public WorldImage getImage() {
-        return new FromFileImage(this.getPosition(), getStr() + "pizza.gif");
+        this.setImage(new FromFileImage(this.getPosition(), getStr() + "pizza.gif"));
     }
     
-    @Override
     public String toString() {
         return "PIZZA";
     }
 }
 
-class HotDog extends GenericFood {
+class HotDog extends Food {
     
     // pos : the position of the balloon
     HotDog(Posn pos) {
         this.setPosition(new Posn(pos.x - 10, pos.y - 70));
-    }
-
-    @Override
-    public WorldImage getImage() {
-        return new FromFileImage(this.getPosition(), getStr() + "hotdog.png");
+        this.setImage(new FromFileImage(this.getPosition(), getStr() + "hotdog.png"));
     }
     
-    @Override
     public String toString() {
         return "HOT DOG";
     }
 }
 
-class Burger extends GenericFood {
+class Burger extends Food {
     
     // pos : the position of the balloon
     Burger(Posn pos) {
         this.setPosition(new Posn(pos.x + 45, pos.y - 70));
-    }
-
-    @Override
-    public WorldImage getImage() {
-        return new FromFileImage(this.getPosition(), getStr() + "burger.png");
+        this.setImage(new FromFileImage(this.getPosition(), getStr() + "burger.png"));
     }
     
-    @Override
     public String toString() {
         return "BURGER";
     }
 }
 
-class Fries extends GenericFood {
+class Fries extends Food {
     
     // pos : the position of the balloon
     Fries(Posn pos) {
         this.setPosition(new Posn(pos.x + 100, pos.y - 65));
-    }
-
-    @Override
-    public WorldImage getImage() {
-        return new FromFileImage(this.getPosition(), getStr() + "fries.png");
+        this.setImage(new FromFileImage(this.getPosition(), getStr() + "fries.png"));
     }
     
-    @Override
     public String toString() {
         return "FRIES";
     }
 }
-class Sandwich extends GenericFood {
+class Sandwich extends Food {
     
     // pos : the position of the balloon
     Sandwich(Posn pos) {
         this.setPosition(new Posn(pos.x - 25, pos.y));
-    }
-
-    @Override
-    public WorldImage getImage() {
-        return new FromFileImage(this.getPosition(), getStr() + "sandwich.png");
+        this.setImage(new FromFileImage(this.getPosition(), getStr() + "sandwich.png"));
     }
     
-    @Override
     public String toString() {
         return "SANDWICH";
     }
 }
 
-class Cookies extends GenericFood {
+class Cookies extends Food {
     
     // pos : the position of the balloon
     Cookies(Posn pos) {
         this.setPosition(new Posn(pos.x + 45, pos.y - 25));
-    }
-
-    @Override
-    public WorldImage getImage() {
-        return new FromFileImage(this.getPosition(), getStr() + "cookies.png");
+        this.setImage(new FromFileImage(this.getPosition(), getStr() + "cookies.png"));
     }
     
-    @Override
     public String toString() {
         return "COOKIES";
     }
 }
 
-class Coffee extends GenericFood {
+class Coffee extends Food {
     
     // pos : the position of the balloon
     Coffee(Posn pos) {
         this.setPosition(new Posn(pos.x + 45, pos.y + 20));
-    }
-
-    @Override
-    public WorldImage getImage() {
-        return new FromFileImage(this.getPosition(), getStr() + "coffee.png");
+        this.setImage(new FromFileImage(this.getPosition(), getStr() + "coffee.png"));
     }
     
-    @Override
     public String toString() {
         return "COFFEE";
     }
 }
 
-class Soda extends GenericFood {
+class Soda extends Food {
     
     // pos : the position of the balloon
     Soda(Posn pos) {
         this.setPosition(new Posn(pos.x - 90, pos.y - 10));
-    }
-
-    @Override
-    public WorldImage getImage() {
-        return new FromFileImage(this.getPosition(), getStr() + "soda.png");
+        this.setImage(new FromFileImage(this.getPosition(), getStr() + "soda.png"));
     }
     
-    @Override
     public String toString() {
         return "SODA";
     }
 }
 
-class Milk extends GenericFood {
+class Milk extends Food {
     
     // pos : the position of the balloon
     Milk(Posn pos) {
         this.setPosition(new Posn(pos.x + 100, pos.y));
-    }
-
-    @Override
-    public WorldImage getImage() {
-        return new FromFileImage(this.getPosition(), getStr() + "milk.png");
+        this.setImage(new FromFileImage(this.getPosition(), getStr() + "milk.png"));
     }
     
-    @Override
     public String toString() {
         return "MILK";
     }

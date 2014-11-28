@@ -19,12 +19,12 @@ import javalib.worldimages.WorldImage;
 public class nextLevel extends World {
 
     int LEVEL;
-    String SCORE;
+    int SCORE;
     int time;
     
-    public nextLevel(int level, int t) {
+    public nextLevel(int level, int t, int score) {
         this.LEVEL = level;
-        this.SCORE = "?";
+        this.SCORE = score;
         this.time = t;
     }
 
@@ -50,7 +50,7 @@ public class nextLevel extends World {
             text1.size = 100;
             text1.style = 1;
             
-            TextImage text2 = new TextImage(new Posn(300, 500), "SCORE: " + this.SCORE, Color.BLACK);
+            TextImage text2 = new TextImage(new Posn(280, 500), "SCORE: " + this.SCORE, Color.BLACK);
             text2.size = 80;
             text2.style = 1;
             
@@ -67,7 +67,7 @@ public class nextLevel extends World {
             return new TakeOrders(this.LEVEL);
         
         else
-            return new nextLevel(this.LEVEL, this.time + 1);
+            return new nextLevel(this.LEVEL, this.time + 1, this.SCORE);
     }
     
 }

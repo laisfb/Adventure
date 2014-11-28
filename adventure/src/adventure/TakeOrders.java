@@ -74,7 +74,6 @@ public class TakeOrders extends World {
         FromFileImage bg = new FromFileImage(new Posn(450,330), str + "background.png");
         FromFileImage counter = new FromFileImage(new Posn(450,950), str + "countertop.png");
         OverlayImages img = new OverlayImages(bg, bg);
-        TextImage text;
         
         int i=0;
         while (i<listOfClients.length) {
@@ -101,7 +100,7 @@ public class TakeOrders extends World {
 
                     int x = food.pinhole.x + 25;
                     int y = food.pinhole.y + food.getHeight()/2;
-                    text = new TextImage(new Posn(x, y), j + "", Color.BLACK);
+                    TextImage text = new TextImage(new Posn(x, y), j + "", Color.BLACK);
                     text.size = 15;
                     text.style = 1;
                     img = new OverlayImages(img, text);
@@ -113,7 +112,7 @@ public class TakeOrders extends World {
         
         img = new OverlayImages(img, counter);
         
-        text = new TextImage(new Posn(800, 850), "MAKE ORDERS", Color.BLACK);
+        TextImage text = new TextImage(new Posn(800, 850), "MAKE ORDERS", Color.BLACK);
         text.size = 15;
         text.style = 1;
         
@@ -139,7 +138,7 @@ public class TakeOrders extends World {
         // If clicked whithin the box of "make orders"
         if (loc.inside(this.box)) {
             System.out.println("Go to kitchen.");
-            return new MakeOrders(this.listOfClients, this.LEVEL);
+            return new MakeOrders(this.listOfClients, this.LEVEL, 0);
         }
         
         else {

@@ -20,8 +20,8 @@ abstract class Client {
     private Order order;
     private Posn position;
     
-    private FromFileImage balloon;    
-    FromFileImage picture;
+    private FromFileImage balloon;
+    private FromFileImage picture;
     
     private boolean show = true;
     private boolean showOrder = true;
@@ -89,7 +89,8 @@ abstract class Client {
     
     // They are considered equal if their image is the same
     public boolean equals(Client c) {
-        return (((FromFileImage)this.getImage()).fileName).equals(((FromFileImage)c.getImage()).fileName);
+        return (this.picture.fileName).equals(c.picture.fileName);
+        //return (((FromFileImage)this.getImage()).fileName).equals(((FromFileImage)c.getImage()).fileName);
     }
     
     public static Client randomClient(int level) {
