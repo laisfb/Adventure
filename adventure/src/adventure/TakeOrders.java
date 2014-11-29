@@ -137,7 +137,7 @@ public class TakeOrders extends World {
         
         // If clicked whithin the box of "make orders"
         if (loc.inside(this.box)) {
-            System.out.println("Go to kitchen.");
+            //System.out.println("Go to kitchen.");
             return new MakeOrders(this.listOfClients, this.LEVEL, 0);
         }
         

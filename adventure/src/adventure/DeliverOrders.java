@@ -102,7 +102,7 @@ public class DeliverOrders extends World {
         
         // If clicked whithin the box of "make orders"
         if (loc.inside(this.box)) {
-            System.out.println("Go to kitchen.");
+            //System.out.println("Go to kitchen.");
             return new MakeOrders(this.listOfClients, this.LEVEL, this.score);
         }
         
@@ -116,21 +116,21 @@ public class DeliverOrders extends World {
                     
                     if (done.getSize() == 0) {
                         this.score -= 5;
-                        System.out.println("Empty order! Score: " + this.score);
+                        //System.out.println("Empty order! Score: " + this.score);
                         this.listOfClients[i].showOrder();
                         return new DeliverOrders(this.listOfClients, this.done, this.LEVEL, 0, this.score); 
                     }
                     
                     else if (this.done.equals(listOfClients[i].getOrder())) {
                             this.score += 50;
-                            System.out.println("Right order! Score: " + this.score);
+                            //System.out.println("Right order! Score: " + this.score);
                             this.listOfClients[i].dontShow();
                             this.done = new Order(new Food[0]);
                     }
                     
                     else {
                         this.score -= 10;
-                        System.out.println("Wrong order! Score: " + this.score);
+                        //System.out.println("Wrong order! Score: " + this.score);
                     }
                 }
                 i++;
