@@ -91,10 +91,6 @@ public class Test {
             }
         }
         
-        // If the client's order was "asked" again:
-        //   a baloon with the same order is shown
-        //   the score decreases
-        //   the counter of time goes back to zero
     }
     
     public static void check_MakeOrders() {
@@ -107,12 +103,35 @@ public class Test {
         //   the order being made is empty
         //   and there are always 9 boxes of food
         
-        // Everytime a box is clicked, the order's size
-        //   increase in one and a new image shows up
+        if (make.beingMade.size != 0)
+                throw new RuntimeException("ERROR IN: check_TakeOrders (initial size of beingMade)");
+        
+        if (make.boxes.length != 9)
+                throw new RuntimeException("ERROR IN: check_TakeOrders (number of boxes)");
+        
+        
+        
+        Posn pos = randomPos();
         
         // If the "Start Over" button is clicked,
-        //   the order is restarted, meaning the size
-        //   is zero, and all the images are gone
+        //   the order is restarted, meaning the size is zero        
+        if (pos.inside(make.boxLeft) && make.beingMade.size != 0)
+            throw new RuntimeException("ERROR IN: check_TakeOrders (size of beingMade when start over)");
+        
+        
+        // To make sure it's not going to change worlds
+        while (pos.inside(make.boxLeft) || pos.inside(make.boxRight))
+            pos = randomPos(); 
+        
+        int sizeBefore = make.beingMade.size;
+        make = (MakeOrders) make.onMouseClicked(pos);
+        
+        // Everytime a box is clicked, the order's size increase in one
+        for(int i=0; i<9; i++) {
+            if (pos.inside(make.boxes[i]) && make.beingMade.size != sizeBefore + 1)
+                throw new RuntimeException("ERROR IN: check_TakeOrders (size of updated beingMade)");
+        }
+        
     }
     
     public static void check_DeliverOrders() {
