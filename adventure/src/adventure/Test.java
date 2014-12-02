@@ -6,6 +6,7 @@
 package adventure;
 
 import java.util.Random;
+import javalib.funworld.World;
 import javalib.worldimages.Posn;
 
 /**
@@ -28,7 +29,7 @@ public class Test {
         }
         else {
             
-            for(int i=0; i<50; i++) {
+            for(int i=0; i<100; i++) {
                 check_transitions();
                 check_TakeOrders();
                 check_MakeOrders();
@@ -61,11 +62,24 @@ public class Test {
         // System.out.println("Pos: (" + pos.x + "," + pos.y + ")");
         // System.out.println("Box: (" + take.box.pinhole.x + "," + take.box.pinhole.y + ")");
         
-        if (pos.inside(take.box) && !make.equals(take.onMouseClicked(pos)))
-            throw new RuntimeException("ERROR IN: check_transitions (takeOrders -> makeOrders)");
+        if (pos.inside(take.box) && !(take.onMouseClicked(pos) instanceof MakeOrders))
+            throw new RuntimeException("ERROR IN: check_transitions (TakeOrders -> MakeOrders)");
         
-        else if (pos.inside(make.boxRight) && !deliver.equals(make.onMouseClicked(pos)))
-            throw new RuntimeException("ERROR IN: check_transitions (takeOrders -> makeOrders)");
+        else if (pos.inside(make.boxRight) && !(make.onMouseClicked(pos) instanceof DeliverOrders))
+            throw new RuntimeException("ERROR IN: check_transitions (MakeOrders -> DeliverOrders)");
+        
+         else if (pos.inside(deliver.box) && !(deliver.onMouseClicked(pos) instanceof MakeOrders))
+            throw new RuntimeException("ERROR IN: check_transitions (DeliverOrders -> MakeOrders)");
+        
+        
+        boolean show = false;
+        for (int i=0; i<deliver.listOfClients.length; i++)
+            if (deliver.listOfClients[i].showHun())
+                show = true;
+        
+        // Just making sure it's not trying to go to the MakeOrders world
+        if (!pos.inside(deliver.box) && !show && !(deliver.onMouseClicked(pos) instanceof nextLevel))
+                throw new RuntimeException("ERROR IN: check_DeliverOrders (DeliverOrders -> nextLevel)");
         
     }
     
@@ -104,10 +118,10 @@ public class Test {
         //   and there are always 9 boxes of food
         
         if (make.beingMade.size != 0)
-                throw new RuntimeException("ERROR IN: check_TakeOrders (initial size of beingMade)");
+                throw new RuntimeException("ERROR IN: check_MakeOrders (initial size of beingMade)");
         
         if (make.boxes.length != 9)
-                throw new RuntimeException("ERROR IN: check_TakeOrders (number of boxes)");
+                throw new RuntimeException("ERROR IN: check_MakeOrders (number of boxes)");
         
         
         
@@ -116,7 +130,7 @@ public class Test {
         // If the "Start Over" button is clicked,
         //   the order is restarted, meaning the size is zero        
         if (pos.inside(make.boxLeft) && make.beingMade.size != 0)
-            throw new RuntimeException("ERROR IN: check_TakeOrders (size of beingMade when start over)");
+            throw new RuntimeException("ERROR IN: check_MakeOrders (size of beingMade when start over)");
         
         
         // To make sure it's not going to change worlds
@@ -129,7 +143,7 @@ public class Test {
         // Everytime a box is clicked, the order's size increase in one
         for(int i=0; i<9; i++) {
             if (pos.inside(make.boxes[i]) && make.beingMade.size != sizeBefore + 1)
-                throw new RuntimeException("ERROR IN: check_TakeOrders (size of updated beingMade)");
+                throw new RuntimeException("ERROR IN: check_MakeOrders (size of updated beingMade)");
         }
         
     }
@@ -140,13 +154,6 @@ public class Test {
         TakeOrders take = new TakeOrders(level);
         MakeOrders make = new MakeOrders(take.listOfClients, take.LEVEL, 0);
         DeliverOrders deliver = new DeliverOrders(make.listOfClients, make.beingMade, make.LEVEL, 0, make.SCORE);
-        
-        // In the DeliverOrders world, the list of clients
-        //   is the same as the one of the world who called
-        //   the MakeOrders world
-        
-        // If there are no clients being shown, then the 
-        //   "nextLevel" world is called
         
         // When an order is delivered, it is either right or wrong
         //   if it's right, the client goes away and the score increases
