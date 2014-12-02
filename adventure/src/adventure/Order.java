@@ -37,7 +37,7 @@ public class Order {
         this.listOfFood[0] = randomFood();
         for (int i=1; i<this.size; i++) {
             f = randomFood();
-            while (f.isOn(this.listOfFood,i))
+            while (this.hasFood(f,i))
                 f = randomFood();
             this.listOfFood[i] = f;
         }
@@ -110,6 +110,23 @@ public class Order {
     public static int randomInt(int max) {
 	Random r = new Random();
 	return (r.nextInt(max));
+    }
+    
+    public boolean hasFood(Food f, int max) {
+        for (int i=0; i<max; i++)
+            if (this.listOfFood[i].equals(f))
+                return true;
+        
+        return false;
+    }
+    
+    public int howMany(Food f) {
+        int x = 0;
+        for (int i=0; i<this.size; i++)
+            if (this.listOfFood[i].equals(f))
+                x++;
+        
+        return x;
     }
     
 }

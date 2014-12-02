@@ -51,7 +51,9 @@ public class Test {
     }
 
     public static void check_transitions() {
-        TakeOrders take = new TakeOrders(1);
+        
+        int level = randomInt(4) + 1; // From 1 to 5
+        TakeOrders take = new TakeOrders(level);
         MakeOrders make = new MakeOrders(take.listOfClients, take.LEVEL, 0);
         DeliverOrders deliver = new DeliverOrders(make.listOfClients, make.beingMade, make.LEVEL, 0, make.SCORE);
         
@@ -60,7 +62,7 @@ public class Test {
         // System.out.println("Box: (" + take.box.pinhole.x + "," + take.box.pinhole.y + ")");
         
         if (pos.inside(take.box) && !make.equals(take.onMouseClicked(pos)))
-           throw new RuntimeException("ERROR IN: check_transitions (takeOrders -> makeOrders)");
+            throw new RuntimeException("ERROR IN: check_transitions (takeOrders -> makeOrders)");
         
         else if (pos.inside(make.boxRight) && !deliver.equals(make.onMouseClicked(pos)))
             throw new RuntimeException("ERROR IN: check_transitions (takeOrders -> makeOrders)");
@@ -68,9 +70,26 @@ public class Test {
     }
     
     public static void check_TakeOrders() {
+        
+        int level = randomInt(4) + 1; // From 1 to 5
+        TakeOrders take = new TakeOrders(level);
+        
         // In the TakeOrders world there are always between 1 and 3 clients
+        if (take.listOfClients.length < 1 || take.listOfClients.length > 3)
+            throw new RuntimeException("ERROR IN: check_TakeOrders (size of listOfClients)");            
         
         // Each order must be have at least 3 elements, all different
+        for (int i=0; i<take.listOfClients.length; i++) {
+            Order ord = take.listOfClients[i].getOrder();
+            
+            if (ord.size < 3)
+                throw new RuntimeException("ERROR IN: check_TakeOrders (size of Order)");
+            
+            for (int j=0; j<ord.size; j++) {
+                if (ord.howMany(ord.listOfFood[j]) != 1)
+                    throw new RuntimeException("ERROR IN: check_TakeOrders (repeated foods)");
+            }
+        }
         
         // If the client's order was "asked" again:
         //   a baloon with the same order is shown
@@ -79,6 +98,11 @@ public class Test {
     }
     
     public static void check_MakeOrders() {
+        
+        int level = randomInt(4) + 1; // From 1 to 5
+        TakeOrders take = new TakeOrders(level);
+        MakeOrders make = new MakeOrders(take.listOfClients, take.LEVEL, 0);
+        
         // Every time the MakeOrders world is created,
         //   the order being made is empty
         //   and there are always 9 boxes of food
@@ -92,6 +116,12 @@ public class Test {
     }
     
     public static void check_DeliverOrders() {
+        
+        int level = randomInt(4) + 1; // From 1 to 5
+        TakeOrders take = new TakeOrders(level);
+        MakeOrders make = new MakeOrders(take.listOfClients, take.LEVEL, 0);
+        DeliverOrders deliver = new DeliverOrders(make.listOfClients, make.beingMade, make.LEVEL, 0, make.SCORE);
+        
         // In the DeliverOrders world, the list of clients
         //   is the same as the one of the world who called
         //   the MakeOrders world

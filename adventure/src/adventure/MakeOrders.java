@@ -94,12 +94,12 @@ public class MakeOrders extends World {
         
         // If clicked whithin the box of "deliver orders"
         if (loc.inside(this.boxRight)) {
-            System.out.println("Deliver the food.");
+            //System.out.println("Deliver the food.");
             return new DeliverOrders(this.listOfClients, this.beingMade, this.LEVEL, 0, this.SCORE);
         }
         
         else if (loc.inside(this.boxLeft)) {
-            System.out.println("Starting Over.");        
+            //System.out.println("Starting Over.");        
             this.beingMade = new Order(new Food[0]);          
         }
         

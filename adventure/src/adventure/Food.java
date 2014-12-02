@@ -46,13 +46,6 @@ class Food {
     public String getStr() {
         return str;
     }
-    
-    public boolean isOn(Food[] list, int size) {
-        for (int i=0; i<size; i++)
-            if (list[i].equals(this))
-                return true;
-        return false;
-    }
 }
 
 class Pizza extends Food {
