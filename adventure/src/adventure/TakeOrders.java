@@ -18,15 +18,16 @@ public class TakeOrders extends World {
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
 
     int LEVEL = -1;
+    int SCORE = 0;
     
     Client[] listOfClients;
     int time;
     
     RectangleImage box;
     
-    TakeOrders(int level) {
+    TakeOrders(int level, int score) {
         this.LEVEL = level;
-        
+        this.SCORE = score;
         this.time = 0;
         
         this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
@@ -57,15 +58,14 @@ public class TakeOrders extends World {
              
     }
     
-    TakeOrders(int level, Client[] list, int time) {
+    TakeOrders(int level, Client[] list, int time, int score) {
         this.LEVEL = level;
-        
-        this.listOfClients = new Client[level];
+        this.SCORE = score;
         this.time = time;
         
         this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
         
-        listOfClients = list;
+        this.listOfClients = list;
     }
 
     @Override
@@ -129,7 +129,8 @@ public class TakeOrders extends World {
                listOfClients[i].dontShowOrder();
         }
         
-        return new TakeOrders(this.LEVEL, this.listOfClients, this.time + 1);
+        this.time = this.time + 1;
+        return this;
     }
     
     @Override
@@ -138,7 +139,7 @@ public class TakeOrders extends World {
         // If clicked whithin the box of "make orders"
         if (loc.inside(this.box)) {
             //System.out.println("Go to kitchen.");
-            return new MakeOrders(this.listOfClients, this.LEVEL, 0);
+            return new MakeOrders(this.listOfClients, this.LEVEL, this.SCORE);
         }
         
         else {
@@ -151,7 +152,7 @@ public class TakeOrders extends World {
                 // System.out.println("Difference: (" + (abs(pos.x - loc.x)) + " , " + (abs(pos.y - loc.y)) + ")");
                 if (loc.insideHalf(this.listOfClients[i].getImage())) {
                     this.listOfClients[i].showOrder();
-                    return new TakeOrders(this.LEVEL, this.listOfClients, 0);                
+                    this.time = 0;
                 }
                 i++;
             }

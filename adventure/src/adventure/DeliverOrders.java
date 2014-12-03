@@ -21,7 +21,8 @@ public class DeliverOrders extends World {
     Client[] listOfClients;
     Order done;
     
-    RectangleImage box;
+    RectangleImage boxRight;
+    RectangleImage boxLeft;
     
     int LEVEL;
     int time = 0;
@@ -35,8 +36,10 @@ public class DeliverOrders extends World {
         this.LEVEL = level;
         this.time = time;
         this.score = score;
+        System.out.println("Old score: " + this.score);
         
-        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
+        this.boxRight = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
+        this.boxLeft = new RectangleImage(new Posn(90, 846), 150, 40, Color.ORANGE);
         
         if(time == 0)
             for (int i=0; i<listOfClients.length; i++)
@@ -88,12 +91,20 @@ public class DeliverOrders extends World {
         
         img = new OverlayImages(img, counter);
         
+        img = new OverlayImages(img, this.boxRight);
+        img = new OverlayImages(img, this.boxLeft);
+        
         TextImage text = new TextImage(new Posn(800, 850), "MAKE ORDERS", Color.BLACK);
         text.size = 15;
-        text.style = 1;
-        
-        img = new OverlayImages(img, this.box);
+        text.style = 1;        
         img = new OverlayImages(img, text);
+        
+
+        text = new TextImage(new Posn(80, 850), "DROP ORDER", Color.BLACK);
+        text.size = 15;
+        text.style = 1;
+        img = new OverlayImages(img, text);        
+        
         return img;
     }
     
@@ -101,9 +112,16 @@ public class DeliverOrders extends World {
     public World onMouseClicked(Posn loc) {
         
         // If clicked whithin the box of "make orders"
-        if (loc.inside(this.box)) {
+        if (loc.inside(this.boxRight)) {
             //System.out.println("Go to kitchen.");
             return new MakeOrders(this.listOfClients, this.LEVEL, this.score);
+        }
+        
+        // If clicked whithin the box of "drop order"
+        else if (loc.inside(this.boxLeft)) {
+            System.out.println("Dropped the order");
+            this.done = new Order(new Food[0]);
+            return this;
         }
         
         else {
@@ -118,12 +136,13 @@ public class DeliverOrders extends World {
                         this.score -= 5;
                         //System.out.println("Empty order! Score: " + this.score);
                         this.listOfClients[i].showOrder();
-                        return new DeliverOrders(this.listOfClients, this.done, this.LEVEL, 0, this.score); 
+                        this.time = 0;
+                        //System.out.println("Show order");
                     }
                     
                     else if (this.done.equals(listOfClients[i].getOrder())) {
                             this.score += 50;
-                            //System.out.println("Right order! Score: " + this.score);
+                            System.out.println("Right order! New score: " + this.score);
                             this.listOfClients[i].dontShow();
                             this.done = new Order(new Food[0]);
                     }
@@ -138,7 +157,7 @@ public class DeliverOrders extends World {
 
             for (i=0; i<listOfClients.length; i++) {
                 if (this.listOfClients[i].showHun())
-                    return new DeliverOrders(this.listOfClients, this.done, this.LEVEL, 0, this.score);
+                    return this;
             }
             
             return new nextLevel(this.LEVEL + 1, 0, this.score);
@@ -163,7 +182,8 @@ public class DeliverOrders extends World {
                listOfClients[i].dontShowOrder();
         }
         
-        return new DeliverOrders(this.listOfClients, this.done, this.LEVEL, this.time + 1, this.score);
+        this.time = this.time + 1;
+        return this;
     }
     
 }

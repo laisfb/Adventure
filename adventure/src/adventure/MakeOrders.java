@@ -25,6 +25,7 @@ public class MakeOrders extends World {
     
     RectangleImage boxRight;
     RectangleImage boxLeft;
+    
     Posn[] boxesPositions = new Posn[9];
     FromFileImage[] boxes = new FromFileImage[9];
     
@@ -35,9 +36,10 @@ public class MakeOrders extends World {
         
         this.beingMade = new Order(new Food[0]);
         
-        int k = 0;
         this.boxRight = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
         this.boxLeft = new RectangleImage(new Posn(90, 846), 150, 40, Color.ORANGE);
+        
+        int k = 0;
         for (int i=0; i<3; i++)
             for (int j=0; j<3; j++) {
                 k = 3*i + j;
@@ -49,14 +51,16 @@ public class MakeOrders extends World {
     @Override
     public WorldImage makeImage() {
         FromFileImage bg = new FromFileImage(new Posn(100,450), str + "kitchen.png");
+        
+        OverlayImages img = new OverlayImages(bg, this.boxRight);
+        img = new OverlayImages(img, this.boxLeft);
+        
+        
         TextImage text = new TextImage(new Posn(800, 850), "DELIVER ORDERS", Color.BLACK);
         text.size = 15;
         text.style = 1;
-        
-        OverlayImages img = new OverlayImages(bg, this.boxRight);
         img = new OverlayImages(img, text);
         
-        img = new OverlayImages(img, this.boxLeft);
 
         text = new TextImage(new Posn(80, 850), "START OVER", Color.BLACK);
         text.size = 15;
@@ -98,6 +102,7 @@ public class MakeOrders extends World {
             return new DeliverOrders(this.listOfClients, this.beingMade, this.LEVEL, 0, this.SCORE);
         }
         
+        // If clicked whithin the box of "start over"
         else if (loc.inside(this.boxLeft)) {
             //System.out.println("Starting Over.");        
             this.beingMade = new Order(new Food[0]);          

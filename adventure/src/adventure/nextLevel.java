@@ -64,7 +64,7 @@ public class nextLevel extends World {
     @Override
     public World onTick() {
         if (time == 2)
-            return new TakeOrders(this.LEVEL);
+            return new TakeOrders(this.LEVEL, this.SCORE);
         
         else
             return new nextLevel(this.LEVEL, this.time + 1, this.SCORE);

@@ -6,7 +6,6 @@
 package adventure;
 
 import java.util.Random;
-import javalib.funworld.World;
 import javalib.worldimages.Posn;
 
 /**
@@ -15,7 +14,7 @@ import javalib.worldimages.Posn;
  */
 public class Test {
 
-    private final static boolean testingMode = true;
+    private final static boolean testingMode = false;
 
     /**
      * @param args the command line arguments
@@ -24,7 +23,7 @@ public class Test {
         
         // level , showOrders , time
         if (!testingMode) {
-            TakeOrders take = new TakeOrders(1);
+            TakeOrders take = new TakeOrders(1, 0);
             take.bigBang(900,900,1);
         }
         else {
@@ -54,8 +53,8 @@ public class Test {
     public static void check_transitions() {
         
         int level = randomInt(4) + 1; // From 1 to 5
-        TakeOrders take = new TakeOrders(level);
-        MakeOrders make = new MakeOrders(take.listOfClients, take.LEVEL, 0);
+        TakeOrders take = new TakeOrders(level, 0);
+        MakeOrders make = new MakeOrders(take.listOfClients, take.LEVEL, take.SCORE);
         DeliverOrders deliver = new DeliverOrders(make.listOfClients, make.beingMade, make.LEVEL, 0, make.SCORE);
         
         Posn pos = randomPos(); // new Posn(810, 846);
@@ -68,7 +67,7 @@ public class Test {
         else if (pos.inside(make.boxRight) && !(make.onMouseClicked(pos) instanceof DeliverOrders))
             throw new RuntimeException("ERROR IN: check_transitions (MakeOrders -> DeliverOrders)");
         
-         else if (pos.inside(deliver.box) && !(deliver.onMouseClicked(pos) instanceof MakeOrders))
+         else if (pos.inside(deliver.boxRight) && !(deliver.onMouseClicked(pos) instanceof MakeOrders))
             throw new RuntimeException("ERROR IN: check_transitions (DeliverOrders -> MakeOrders)");
         
         
@@ -78,7 +77,8 @@ public class Test {
                 show = true;
         
         // Just making sure it's not trying to go to the MakeOrders world
-        if (!pos.inside(deliver.box) && !show && !(deliver.onMouseClicked(pos) instanceof nextLevel))
+        //   or trying to drop an order
+        if (!pos.inside(deliver.boxRight) && !pos.inside(deliver.boxLeft) && !show && !(deliver.onMouseClicked(pos) instanceof nextLevel))
                 throw new RuntimeException("ERROR IN: check_DeliverOrders (DeliverOrders -> nextLevel)");
         
     }
@@ -86,7 +86,7 @@ public class Test {
     public static void check_TakeOrders() {
         
         int level = randomInt(4) + 1; // From 1 to 5
-        TakeOrders take = new TakeOrders(level);
+        TakeOrders take = new TakeOrders(level, 0);
         
         // In the TakeOrders world there are always between 1 and 3 clients
         if (take.listOfClients.length < 1 || take.listOfClients.length > 3)
@@ -110,8 +110,8 @@ public class Test {
     public static void check_MakeOrders() {
         
         int level = randomInt(4) + 1; // From 1 to 5
-        TakeOrders take = new TakeOrders(level);
-        MakeOrders make = new MakeOrders(take.listOfClients, take.LEVEL, 0);
+        TakeOrders take = new TakeOrders(level, 0);
+        MakeOrders make = new MakeOrders(take.listOfClients, take.LEVEL, take.SCORE);
         
         // Every time the MakeOrders world is created,
         //   the order being made is empty
@@ -151,8 +151,8 @@ public class Test {
     public static void check_DeliverOrders() {
         
         int level = randomInt(4) + 1; // From 1 to 5
-        TakeOrders take = new TakeOrders(level);
-        MakeOrders make = new MakeOrders(take.listOfClients, take.LEVEL, 0);
+        TakeOrders take = new TakeOrders(level, 0);
+        MakeOrders make = new MakeOrders(take.listOfClients, take.LEVEL, take.SCORE);
         DeliverOrders deliver = new DeliverOrders(make.listOfClients, make.beingMade, make.LEVEL, 0, make.SCORE);
         
         // When an order is delivered, it is either right or wrong
