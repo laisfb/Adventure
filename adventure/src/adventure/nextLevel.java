@@ -32,11 +32,11 @@ public class nextLevel extends World {
     public WorldImage makeImage() {
         
         if (this.LEVEL == 6) {
-            TextImage text1 = new TextImage(new Posn(300, 400), "GAME OVER", Color.BLACK);
+            TextImage text1 = new TextImage(new Posn(200, 400), "GAME OVER", Color.BLACK);
             text1.size = 100;
             text1.style = 1;
             
-            TextImage text2 = new TextImage(new Posn(300, 500), "TOTAL SCORE: " + this.SCORE, Color.BLACK);
+            TextImage text2 = new TextImage(new Posn(250, 500), "TOTAL SCORE: " + this.SCORE, Color.BLACK);
             text2.size = 60;
             text2.style = 1;
             
@@ -63,8 +63,11 @@ public class nextLevel extends World {
     
     @Override
     public World onTick() {
-        if (time == 2)
-            return new TakeOrders(this.LEVEL, this.SCORE);
+        if (this.LEVEL == 6)
+            return this.endOfWorld("");
+        
+        else if (time == 2)
+            return new TakeRequests(this.LEVEL, this.SCORE);
         
         else
             return new nextLevel(this.LEVEL, this.time + 1, this.SCORE);

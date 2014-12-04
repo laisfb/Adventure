@@ -17,25 +17,25 @@ abstract class Client {
     
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
     
-    private Order order;
+    private Request request;
     private Posn position;
     
     private FromFileImage balloon;
     private FromFileImage picture;
     
     private boolean show = true;
-    private boolean showOrder = true;
+    private boolean showRequest = true;
     
     public String getStr() {
         return this.str;
     }
     
-    public Order getOrder() {
-        return this.order;
+    public Request getRequest() {
+        return this.request;
     }
     
-    public void setOrder(Order o) {
-        this.order = o;
+    public void setRequest(Request r) {
+        this.request = r;
     }
     
     public Posn getPosition() {
@@ -70,16 +70,16 @@ abstract class Client {
         this.show = false;
     }
     
-    public boolean showOrderHun() {
-        return this.showOrder;
+    public boolean showRequestHun() {
+        return this.showRequest;
     }
     
-    public void showOrder() {
-        this.showOrder = true;
+    public void showRequest() {
+        this.showRequest = true;
     }
     
-    public void dontShowOrder() {
-        this.showOrder = false;
+    public void dontShowRequest() {
+        this.showRequest = false;
     }
     
     public static int randomInt(int max) {
@@ -118,7 +118,7 @@ class man extends Client {
         
         Posn pos = new Posn(this.getPosition().x, this.getPosition().y - 330);
         this.setBalloon(new FromFileImage(pos, this.getStr() + "balloon.png"));
-        this.setOrder(new Order(this.getBalloon().pinhole, level));
+        this.setRequest(new Request(this.getBalloon().pinhole, level));
         
         this.men[0] = new FromFileImage(this.getPosition(), this.getStr() + "man1.png");
         this.men[1] = new FromFileImage(this.getPosition(), this.getStr() + "man2.png");
@@ -137,7 +137,7 @@ class woman extends Client {
         
         Posn pos = new Posn(this.getPosition().x, this.getPosition().y - 300);
         this.setBalloon(new FromFileImage(pos, this.getStr() + "balloon.png"));
-        this.setOrder(new Order(this.getBalloon().pinhole, level));
+        this.setRequest(new Request(this.getBalloon().pinhole, level));
         
         this.women[0] = new FromFileImage(this.getPosition(), this.getStr() + "woman1.png");
         this.women[1] = new FromFileImage(this.getPosition(), this.getStr() + "woman2.png");
@@ -156,7 +156,7 @@ class kid extends Client {
         
         Posn pos = new Posn(this.getPosition().x, this.getPosition().y - 300);
         this.setBalloon(new FromFileImage(pos, this.getStr() + "balloon.png"));
-        this.setOrder(new Order(this.getBalloon().pinhole, level));
+        this.setRequest(new Request(this.getBalloon().pinhole, level));
         
         this.kids[0] = new FromFileImage(this.getPosition(), this.getStr() + "kid1.png");
         this.kids[1] = new FromFileImage(this.getPosition(), this.getStr() + "kid2.png");

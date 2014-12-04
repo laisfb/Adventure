@@ -15,12 +15,13 @@ import javalib.worldimages.WorldImage;
  * @author laisfb
  */
 
-class Food {
+abstract class Food {
     
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\food\\";
+    
     private Posn position;
     public FromFileImage picture;
-    
+        
     public Posn getPosition() {
         return this.position;
     }
