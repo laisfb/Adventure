@@ -54,8 +54,8 @@ public class Test {
         
         int level = randomInt(4) + 1; // From 1 to 5
         TakeRequests take = new TakeRequests(level, 0);
-        MakeRequests make = new MakeRequests(take.listOfClients, take.LEVEL, take.SCORE);
-        DeliverRequests deliver = new DeliverRequests(make.listOfClients, make.beingMade, make.LEVEL, 0, make.SCORE);
+        MakeRequests make = new MakeRequests(take.listOfClients, take.LEVEL, take.score);
+        DeliverRequests deliver = new DeliverRequests(make.listOfClients, make.beingMade, make.LEVEL, 0, make.score);
         
         Posn pos = randomPos(); // new Posn(810, 846);
         // System.out.println("Pos: (" + pos.x + "," + pos.y + ")");
@@ -111,7 +111,7 @@ public class Test {
         
         int level = randomInt(4) + 1; // From 1 to 5
         TakeRequests take = new TakeRequests(level, 0);
-        MakeRequests make = new MakeRequests(take.listOfClients, take.LEVEL, take.SCORE);
+        MakeRequests make = new MakeRequests(take.listOfClients, take.LEVEL, take.score);
         
         // Every time the MakeRequests world is created,
         //   the request being made is empty
@@ -152,8 +152,8 @@ public class Test {
         
         int level = randomInt(4) + 1; // From 1 to 5
         TakeRequests take = new TakeRequests(level, 0);
-        MakeRequests make = new MakeRequests(take.listOfClients, take.LEVEL, take.SCORE);
-        DeliverRequests deliver = new DeliverRequests(make.listOfClients, make.beingMade, make.LEVEL, 0, make.SCORE);
+        MakeRequests make = new MakeRequests(take.listOfClients, take.LEVEL, take.score);
+        DeliverRequests deliver = new DeliverRequests(make.listOfClients, make.beingMade, make.LEVEL, 0, make.score);
         
         // When an request is delivered, it is either right or wrong
         //   if it's right, the client goes away and the score increases

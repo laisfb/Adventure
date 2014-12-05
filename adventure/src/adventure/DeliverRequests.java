@@ -17,28 +17,28 @@ import javalib.worldimages.*;
 public class DeliverRequests extends World {
 
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
-
-    Client[] listOfClients;
-    Request done;
+    
+    int LEVEL;
+    int time;
+    int score;
     
     RectangleImage boxRight;
     RectangleImage boxLeft;
     
-    int LEVEL;
-    int time = 0;
-    int score = 0;
+    Client[] listOfClients;
+    Request done;
     
-    DeliverRequests(Client[] listOfClients, Request beingMade, int level, int time, int score) {
-        this.listOfClients = listOfClients;        
-        this.done = beingMade;
-        //System.out.println("Request size: " + this.done.size);
-        
+    DeliverRequests(Client[] listOfClients, Request beingMade, int level, int time, int score) {        
         this.LEVEL = level;
         this.time = time;
         this.score = score;
         
         this.boxRight = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
-        this.boxLeft = new RectangleImage(new Posn(90, 846), 150, 40, Color.ORANGE);
+        this.boxLeft = new RectangleImage(new Posn(90, 846), 150, 40, Color.ORANGE);        
+        
+        this.listOfClients = listOfClients;        
+        this.done = beingMade;
+        //System.out.println("Request size: " + this.done.size);
         
         if(time == 0)
             for (int i=0; i<listOfClients.length; i++)
@@ -53,25 +53,25 @@ public class DeliverRequests extends World {
         OverlayImages img = new OverlayImages(bg, bg);
         
         int i=0;
-        while (i<listOfClients.length) {
-            if (listOfClients[i].showHun()) {
-                img = new OverlayImages(img, listOfClients[i].getImage());
+        while (i < this.listOfClients.length) {
+            if (this.listOfClients[i].showHun()) {
+                img = new OverlayImages(img, this.listOfClients[i].getImage());
 
-                if (listOfClients[i].showRequestHun()) {
+                if (this.listOfClients[i].showRequestHun()) {
                     FromFileImage balloon;
 
                     int size;
                     Food[] request;
                     WorldImage food;
 
-                    balloon = listOfClients[i].getBalloon();
+                    balloon = this.listOfClients[i].getBalloon();
                     img = new OverlayImages(img, balloon);
 
-                    size = listOfClients[i].getRequest().getSize();
-                    request = listOfClients[i].getRequest().getFood();
+                    size = this.listOfClients[i].getRequest().getSize();
+                    request = this.listOfClients[i].getRequest().getFood();
 
                     int j = 0;
-                    while (j<size) {
+                    while (j < size) {
                         food = request[j].getImage();
                         img = new OverlayImages(img, food);
                         j++;
@@ -92,6 +92,7 @@ public class DeliverRequests extends World {
         
         img = new OverlayImages(img, this.boxRight);
         img = new OverlayImages(img, this.boxLeft);
+        
         
         TextImage text = new TextImage(new Posn(800, 850), "MAKE FOOD", Color.BLACK);
         text.size = 15;
@@ -126,15 +127,17 @@ public class DeliverRequests extends World {
         else {
             int i = 0;
             Posn pos;
-            while (i<listOfClients.length) {
-                pos = listOfClients[i].getPosition();
+            while (i < this.listOfClients.length) {
+                pos = this.listOfClients[i].getPosition();
                 
-                if (loc.insideHalf(this.listOfClients[i].getImage())) {
+                // The clients has to be there to receive the request
+                if (this.listOfClients[i].showHun() && loc.insideHalf(this.listOfClients[i].getImage())) {
                     
                     if (done.getSize() == 0) {
                         this.score -= 5;
                         //System.out.println("Empty request!");
                         this.listOfClients[i].showRequest();
+                        this.listOfClients[i].restartWaiting();
                         this.time = 0;
                         //System.out.println("Show request");
                     }
@@ -154,7 +157,7 @@ public class DeliverRequests extends World {
                 i++;
             }
 
-            for (i=0; i<listOfClients.length; i++) {
+            for (i=0; i < this.listOfClients.length; i++) {
                 if (this.listOfClients[i].showHun())
                     return this;
             }
@@ -164,6 +167,31 @@ public class DeliverRequests extends World {
 
     }
     
+    @Override
+    public World onTick() {
+        
+        if (this.time >= 3) {
+            for (int i=0; i < this.listOfClients.length; i++)
+               this.listOfClients[i].dontShowRequest();
+        }
+                
+        // Clients will go away if you take too long to deliver their food
+        for (int i=0; i < this.listOfClients.length; i++) {
+               this.listOfClients[i].stillWaiting();
+               if (this.listOfClients[i].doneWaiting()) {
+                   this.listOfClients[i].dontShow();
+                   this.score -= 10;
+               }
+        }
+        
+        if (Client.allGone(this.listOfClients))
+            return new nextLevel(6, 0, this.score);
+        
+        this.time = this.time + 1;
+        return this;
+    }
+    
+    // Two "DeliverRequests" are equal if they have the same list of clients and same list of request done
     public boolean equals(World w) {
         if (w instanceof DeliverRequests) {
             return Arrays.equals(this.listOfClients, ((DeliverRequests)w).listOfClients) &&
@@ -171,18 +199,6 @@ public class DeliverRequests extends World {
         }
         
         return false;
-    }
-    
-    @Override
-    public World onTick() {
-        
-        if (this.time >= 3) {
-            for (int i=0; i<listOfClients.length; i++)
-               listOfClients[i].dontShowRequest();
-        }
-        
-        this.time = this.time + 1;
-        return this;
     }
     
 }

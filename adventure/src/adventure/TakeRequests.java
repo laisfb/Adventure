@@ -6,6 +6,7 @@
 package adventure;
 
 import java.awt.Color;
+import java.util.Arrays;
 import javalib.funworld.*;
 import javalib.worldimages.*;
 
@@ -18,54 +19,44 @@ public class TakeRequests extends World {
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
 
     int LEVEL = -1;
-    int SCORE = 0;
-    
-    Client[] listOfClients;
+    int score = 0;    
     int time;
     
     RectangleImage box;
     
+    Client[] listOfClients;
+    
     TakeRequests(int level, int score) {
         this.LEVEL = level;
-        this.SCORE = score;
+        this.score = score;
         this.time = 0;
         
         this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
         
         if (this.LEVEL == 1) {
             this.listOfClients = new Client[1];
-            listOfClients[0] = Client.randomClient(this.LEVEL);
+            this.listOfClients[0] = Client.randomClient(this.LEVEL);
         }
         
         else if (this.LEVEL == 2) {
             this.listOfClients = new Client[2];
-            listOfClients[0] = Client.randomClient(this.LEVEL);
+            this.listOfClients[0] = Client.randomClient(this.LEVEL);
             
-            listOfClients[1] = Client.randomClient(this.LEVEL);
-            Posn pos = listOfClients[1].getPosition();
-            while(pos.equals(listOfClients[0].getPosition())) {
-                listOfClients[1] = Client.randomClient(this.LEVEL);
-                pos = listOfClients[1].getPosition();
+            this.listOfClients[1] = Client.randomClient(this.LEVEL);
+            Posn pos = this.listOfClients[1].getPosition();
+            while(pos.equals(this.listOfClients[0].getPosition())) {
+                this.listOfClients[1] = Client.randomClient(this.LEVEL);
+                pos = this.listOfClients[1].getPosition();
             }
         }
         
         else {
             this.listOfClients = new Client[3];
-            listOfClients[0] = new man(this.LEVEL);
-            listOfClients[1] = new woman(this.LEVEL);
-            listOfClients[2] = new kid(this.LEVEL);
+            this.listOfClients[0] = new man(this.LEVEL);
+            this.listOfClients[1] = new woman(this.LEVEL);
+            this.listOfClients[2] = new kid(this.LEVEL);
         }
              
-    }
-    
-    TakeRequests(int level, Client[] list, int time, int score) {
-        this.LEVEL = level;
-        this.SCORE = score;
-        this.time = time;
-        
-        this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
-        
-        this.listOfClients = list;
     }
 
     @Override
@@ -76,34 +67,36 @@ public class TakeRequests extends World {
         OverlayImages img = new OverlayImages(bg, bg);
         
         int i=0;
-        while (i<listOfClients.length) {
-            img = new OverlayImages(img, listOfClients[i].getImage());
-            
-            if (listOfClients[i].showRequestHun()) {
-                FromFileImage balloon;
+        while (i < this.listOfClients.length) {
+            if (this.listOfClients[i].showHun()) {
+                img = new OverlayImages(img, this.listOfClients[i].getImage());
 
-                int size;
-                Food[] request;
-                WorldImage food;
+                if (this.listOfClients[i].showRequestHun()) {
+                    FromFileImage balloon;
 
-                balloon = listOfClients[i].getBalloon();
-                img = new OverlayImages(img, balloon);
+                    int size;
+                    Food[] request;
+                    WorldImage food;
 
-                size = listOfClients[i].getRequest().getSize();
-                request = listOfClients[i].getRequest().getFood();
+                    balloon = this.listOfClients[i].getBalloon();
+                    img = new OverlayImages(img, balloon);
 
-                int j = 0;
-                while (j<size) {
-                    food = request[j].getImage();
-                    img = new OverlayImages(img, food);
-                    j++;
+                    size = this.listOfClients[i].getRequest().getSize();
+                    request = this.listOfClients[i].getRequest().getFood();
 
-                    int x = food.pinhole.x + 25;
-                    int y = food.pinhole.y + food.getHeight()/2;
-                    TextImage text = new TextImage(new Posn(x, y), j + "", Color.BLACK);
-                    text.size = 15;
-                    text.style = 1;
-                    img = new OverlayImages(img, text);
+                    int j = 0;
+                    while (j < size) {
+                        food = request[j].getImage();
+                        img = new OverlayImages(img, food);
+                        j++;
+
+                        int x = food.pinhole.x + 25;
+                        int y = food.pinhole.y + food.getHeight()/2;
+                        TextImage text = new TextImage(new Posn(x, y), j + "", Color.BLACK);
+                        text.size = 15;
+                        text.style = 1;
+                        img = new OverlayImages(img, text);
+                    }
                 }
             }
             
@@ -122,36 +115,25 @@ public class TakeRequests extends World {
     }
     
     @Override
-    public World onTick() {
-        
-        if (time >= 3) {
-            for (int i=0; i<listOfClients.length; i++)
-               listOfClients[i].dontShowRequest();
-        }
-        
-        this.time = this.time + 1;
-        return this;
-    }
-    
-    @Override
     public World onMouseClicked(Posn loc) {
         
         // If clicked whithin the box of "make food"
         if (loc.inside(this.box)) {
             //System.out.println("Go to kitchen.");
-            return new MakeRequests(this.listOfClients, this.LEVEL, this.SCORE);
+            return new MakeRequests(this.listOfClients, this.LEVEL, this.score);
         }
         
         else {
             int i = 0;
             Posn pos;
-            while (i<listOfClients.length) {
-                pos = listOfClients[i].getPosition();
+            while (i < this.listOfClients.length) {
+                pos = this.listOfClients[i].getPosition();
                 // System.out.println("MouseClick: (" + loc.x + " , " + loc.y + ")");
                 // System.out.println("Client: (" + pos.x + " , " + pos.y + ")");
                 // System.out.println("Difference: (" + (abs(pos.x - loc.x)) + " , " + (abs(pos.y - loc.y)) + ")");
                 if (loc.insideHalf(this.listOfClients[i].getImage())) {
                     this.listOfClients[i].showRequest();
+                    this.listOfClients[i].restartWaiting();
                     this.time = 0;
                 }
                 i++;
@@ -159,6 +141,38 @@ public class TakeRequests extends World {
 
             return this;
         }
+    }
+    
+    @Override
+    public World onTick() {        
+        if (time >= 3) {
+            for (int i=0; i < this.listOfClients.length; i++)
+               this.listOfClients[i].dontShowRequest();
+        }
+        
+        // Clients will go away if you take too long to deliver their food
+        for (int i=0; i < this.listOfClients.length; i++) {
+               this.listOfClients[i].stillWaiting();
+               if (this.listOfClients[i].doneWaiting()) {
+                   this.listOfClients[i].dontShow();
+                   this.score -= 10;
+               }
+        }
+        
+        if (Client.allGone(this.listOfClients))
+            return new nextLevel(6, 0, this.score);
+        
+        this.time = this.time + 1;
+        return this;
+    }
+    
+    // Two "TakeRequests" are equal if they have the same list of clients
+    public boolean equals(World w) {
+        if (w instanceof TakeRequests) {
+            return Arrays.equals(this.listOfClients, ((TakeRequests)w).listOfClients);
+        }
+        
+        return false;
     }
     
 }

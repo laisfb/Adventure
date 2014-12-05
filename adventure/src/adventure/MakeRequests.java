@@ -17,34 +17,35 @@ import javalib.worldimages.*;
 public class MakeRequests extends World {
 
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
+    
     int LEVEL;
-    int SCORE;
-
-    Client[] listOfClients;
-    Request beingMade;
+    int score;
     
     RectangleImage boxRight;
     RectangleImage boxLeft;
+
+    Client[] listOfClients;
+    Request beingMade;
     
     Posn[] boxesPositions = new Posn[9];
     FromFileImage[] boxes = new FromFileImage[9];
     
     MakeRequests(Client[] clients, int level, int score) {
-        this.listOfClients = clients;
         this.LEVEL = level;
-        this.SCORE = score;
-        
-        this.beingMade = new Request(new Food[0]);
+        this.score = score;
         
         this.boxRight = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
         this.boxLeft = new RectangleImage(new Posn(90, 846), 150, 40, Color.ORANGE);
         
+        this.listOfClients = clients;
+        this.beingMade = new Request(new Food[0]);
+        
         int k = 0;
         for (int i=0; i<3; i++)
-            for (int j=0; j<3; j++) {
+            for (int j=0; j < 3; j++) {
                 k = 3*i + j;
-                boxesPositions[k] = new Posn(300*j + 150, 250*i + 120);
-                boxes[k] = new FromFileImage(boxesPositions[k], str + "box.png");
+                this.boxesPositions[k] = new Posn(300*j + 150, 250*i + 120);
+                this.boxes[k] = new FromFileImage(this.boxesPositions[k], str + "box.png");
             }
     }
     
@@ -69,11 +70,11 @@ public class MakeRequests extends World {
         
         FromFileImage box;
         String name;
-        for (int i=0; i<9; i++) {
-            img = new OverlayImages(img, boxes[i]);
+        for (int i=0; i < 9; i++) {
+            img = new OverlayImages(img, this.boxes[i]);
                 
             name = Request.everyFood[i].toString();
-            text = new TextImage(new Posn(boxesPositions[i].x - 2*name.length() - 8, boxesPositions[i].y + 30), name, Color.BLACK);
+            text = new TextImage(new Posn(this.boxesPositions[i].x - 2*name.length() - 8, this.boxesPositions[i].y + 30), name, Color.BLACK);
             text.size = 20;
             text.style = 1;
 
@@ -84,7 +85,7 @@ public class MakeRequests extends World {
         img = new OverlayImages(img, whiteBox);
         
         FromFileImage food;
-        for (int i=0; i<this.beingMade.size; i++) {
+        for (int i=0; i < this.beingMade.size; i++) {
             food = (FromFileImage)this.beingMade.listOfFood[i].getImage();
             food.pinhole = new Posn(250 + i*70, 850);
             img = new OverlayImages(img, food);
@@ -99,7 +100,7 @@ public class MakeRequests extends World {
         // If clicked whithin the box of "deliver food"
         if (loc.inside(this.boxRight)) {
             //System.out.println("Deliver the food.");
-            return new DeliverRequests(this.listOfClients, this.beingMade, this.LEVEL, 0, this.SCORE);
+            return new DeliverRequests(this.listOfClients, this.beingMade, this.LEVEL, 0, this.score);
         }
         
         // If clicked whithin the box of "start over"
@@ -110,8 +111,8 @@ public class MakeRequests extends World {
         
         else {
             int j=0;
-            for (int i=0; i<9; i++) {
-                if (loc.inside(boxes[i])) {
+            for (int i=0; i < 9; i++) {
+                if (loc.inside(this.boxes[i])) {
                     this.beingMade = this.beingMade.addFood(this.beingMade.everyFood[i]);
                     
                     //System.out.println(Request.everyFood[i].toString());
@@ -123,7 +124,25 @@ public class MakeRequests extends World {
         return this;
     }
     
-    // Two "MakeRequests" are equal if they have the same list of clients and same list of requests made
+    @Override
+    public World onTick() {
+        // Time goes by while you are making the food
+        // After all, the clients are still waiting
+        for (int i=0; i < this.listOfClients.length; i++) {
+               this.listOfClients[i].stillWaiting();
+               if (this.listOfClients[i].doneWaiting()) {
+                   this.listOfClients[i].dontShow();
+                   this.score -= 10;
+               }
+        }
+        
+        if (Client.allGone(this.listOfClients))
+            return new nextLevel(6, 0, this.score);
+        
+        return this;
+    }
+    
+    // Two "MakeRequests" are equal if they have the same list of clients and same list of request made
     public boolean equals(World w) {
         if (w instanceof MakeRequests) {
             return Arrays.equals(this.listOfClients, ((MakeRequests)w).listOfClients) &&

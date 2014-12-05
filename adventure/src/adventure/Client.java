@@ -26,6 +26,8 @@ abstract class Client {
     private boolean show = true;
     private boolean showRequest = true;
     
+    public int waiting = 0;
+    
     public String getStr() {
         return this.str;
     }
@@ -82,6 +84,18 @@ abstract class Client {
         this.showRequest = false;
     }
     
+    public boolean doneWaiting() {
+        return (this.waiting == 20);
+    }
+    
+    public void restartWaiting() {
+        this.waiting = 0;
+    }
+    
+    public void stillWaiting() {
+        this.waiting = this.waiting + 1;
+    }
+    
     public static int randomInt(int max) {
 	Random r = new Random();
 	return (r.nextInt(max));
@@ -106,6 +120,15 @@ abstract class Client {
         
         else
             throw new RuntimeException("ERROR IN: randomClient");
+    }
+    
+    public static boolean allGone(Client[] list) {
+        for (int i=0; i<list.length; i++) {
+            if (list[i].showHun())
+                return false;
+        }
+        
+        return true;
     }
 }
 
