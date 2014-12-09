@@ -14,7 +14,7 @@ import javalib.worldimages.Posn;
  */
 public class Test {
 
-    private final static boolean testingMode = false;
+    private final static boolean testingMode = true;
 
     /**
      * @param args the command line arguments
@@ -155,14 +155,51 @@ public class Test {
         MakeRequests make = new MakeRequests(take.listOfClients, take.LEVEL, take.score);
         DeliverRequests deliver = new DeliverRequests(make.listOfClients, make.beingMade, make.LEVEL, 0, make.score);
         
-        // When an request is delivered, it is either right or wrong
-        //   if it's right, the client goes away and the score increases
-        //   if it's wrong, the client stays and the score decreases
+        Posn pos = randomPos();
         
-        // If the client's request was "asked" again:
-        //   a baloon with the same request is shown
-        //   the score decreases
-        //   the counter of time goes back to zero
+        // If the "Drop Food" button is clicked,
+        //   the request is dropped, meaning the size is zero        
+        if (pos.inside(deliver.boxLeft) && deliver.done.size != 0)
+            throw new RuntimeException("ERROR IN: check_DeliverRequests (size of updated done)");
+        
+        
+        // To make sure it's not going to change worlds
+        while (pos.inside(deliver.boxLeft) || pos.inside(deliver.boxRight))
+            pos = randomPos(); 
+        
+        for (int i=0; i<deliver.listOfClients.length; i++) {
+            int oldScore = deliver.score;
+            Client c = deliver.listOfClients[i];
+            
+            // When a client is clicked
+            if (pos.insideHalf(c.getImage())) {
+                
+                // If there is no request to be delivered
+                //   then the player is asking the client's request
+                // So the counter goes back to zero
+                //   and the scores decreases a little bit
+                if (deliver.done.size == 0 && (deliver.time != 0 || deliver.score > oldScore)) {
+                    System.out.println("Time: " + deliver.time);
+                    System.out.println("Scores: " + oldScore + " x " + deliver.score);
+                    throw new RuntimeException("ERROR IN: check_DeliverRequests (asking the request again)");
+                }
 
+                // If there is a request being delivered
+                else if (deliver.done.size > 0) {
+
+                    // If it's right, the client goes away and the score increases
+                    if (deliver.done.equals(c.getRequest()) &&
+                            (c.showHun() || deliver.score <= oldScore))
+                        throw new RuntimeException("ERROR IN: check_DeliverRequests (delivering the right order)");
+
+                    // If it's wrong, the client stays and the score decreases
+                    else if (!deliver.done.equals(c.getRequest()) &&
+                            (!c.showHun() || deliver.score >= oldScore))
+                        throw new RuntimeException("ERROR IN: check_DeliverRequests (delivering the wrong order)");
+
+                }
+            }
+        }
+        
     }
 }
