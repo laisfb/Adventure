@@ -159,6 +159,11 @@ public class TakeRequests extends World {
                }
         }
         
+        // Making sure there's no negative score
+        //   (altough it could be possible)
+        if (this.score < 0)
+            this.score = 0;
+        
         if (Client.allGone(this.listOfClients))
             return new nextLevel(6, 0, this.score);
         

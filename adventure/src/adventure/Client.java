@@ -85,7 +85,7 @@ abstract class Client {
     }
     
     public boolean doneWaiting() {
-        return (this.waiting == 20);
+        return (this.waiting >= 20);
     }
     
     public void restartWaiting() {

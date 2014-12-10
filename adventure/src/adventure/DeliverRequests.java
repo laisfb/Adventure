@@ -135,7 +135,7 @@ public class DeliverRequests extends World {
                     
                     if (done.getSize() == 0) {
                         this.score -= 5;
-                        //System.out.println("Empty request!");
+                        System.out.println("Empty request!");
                         this.listOfClients[i].showRequest();
                         this.listOfClients[i].restartWaiting();
                         this.time = 0;
@@ -144,7 +144,7 @@ public class DeliverRequests extends World {
                     
                     else if (this.done.equals(listOfClients[i].getRequest())) {
                             this.score += 50;
-                            //System.out.println("Right request!");
+                            System.out.println("Right request!");
                             this.listOfClients[i].dontShow();
                             this.done = new Request(new Food[0]);
                     }
