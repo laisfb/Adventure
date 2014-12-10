@@ -18,8 +18,8 @@ public class Request {
     
     public Food[] listOfFood;
     public int size;
-    public static Posn balloon
-;    
+    public static Posn balloon;
+    
     // pos : the position of the balloon
     Request(Posn pos, int level) {
         

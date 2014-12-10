@@ -131,7 +131,6 @@ public class Test {
                 throw new RuntimeException("ERROR IN: check_transitions_parameters (DeliverRequests -> MakeRequests)");
             
         }
-              
         
         
         boolean gone = Client.allGone(deliver.listOfClients);
@@ -230,11 +229,11 @@ public class Test {
         make.beingMade = new Request(pos, make.LEVEL);
         
         int sizeBefore = make.beingMade.size;
-        make = (MakeRequests) make.onMouseClicked(pos);
+        MakeRequests newWorld = (MakeRequests) make.onMouseClicked(pos);
         
         // Everytime a box is clicked, the request's size increase in one
         for(int i=0; i<9; i++) {
-            if (pos.inside(make.boxes[i]) && make.beingMade.size != sizeBefore + 1)
+            if (pos.inside(make.boxes[i]) && newWorld.beingMade.size != sizeBefore + 1)
                 throw new RuntimeException("ERROR IN: check_MakeRequests (size of updated beingMade)");
         }
         
@@ -244,8 +243,7 @@ public class Test {
         
         int level = randomInt(4) + 1; // From 1 to 5
         TakeRequests take = new TakeRequests(level, 0);
-        MakeRequests make = new MakeRequests(take.listOfClients, take.LEVEL, take.score);
-        
+        MakeRequests make = new MakeRequests(take.listOfClients, take.LEVEL, take.score);        
         DeliverRequests deliver = new DeliverRequests(make.listOfClients, make.beingMade, make.LEVEL, 0, make.score);
         
         Posn pos = randomPos();
@@ -253,35 +251,34 @@ public class Test {
         // To make sure it's not going to change worlds
         while (pos.inside(deliver.boxRight))
             pos = randomPos();
+        
+        // World generated after the click of the mouse
+        DeliverRequests newWorld = (DeliverRequests)(deliver.onMouseClicked(pos)); 
 
         // If the "Drop Food" button is clicked
         //   the world stays the same
         //   and the request is dropped, meaning the size is now zero
-        if (pos.inside(deliver.boxLeft) && (!(deliver.onMouseClicked(pos) instanceof DeliverRequests) || ((DeliverRequests)deliver.onMouseClicked(pos)).done.size != 0))
+        if (pos.inside(deliver.boxLeft) && (!(newWorld instanceof DeliverRequests) || newWorld.done.size != 0))
             throw new RuntimeException("ERROR IN: check_transitions (Dropping the request)");
         
-        // Pretend to deliver using a random Request
+        
+        // Pretend to deliver using one of the client's request
         //   "pos" can be anything, since it's not going to be shown
-        deliver.done = new Request(pos, make.LEVEL);        
-        
-        // World generated after the click of the mouse
-        DeliverRequests newDeliver = (DeliverRequests)(deliver.onMouseClicked(pos)); 
-        
-        
-        // The list of clients must stay the same
-        //   what changes is if the clients/requests are visible or not
-        if (!deliver.listOfClients.equals(newDeliver.listOfClients))
-            throw new RuntimeException("ERROR IN: check_DeliverRequests (listOfClients changed)");
+        deliver.done = newWorld.listOfClients[randomInt(deliver.listOfClients.length-1)].getRequest();
         
         
         int oldScore = deliver.score;
-        int newScore = newDeliver.score;
+        int newScore = newWorld.score;
         
         for (int i=0; i<deliver.listOfClients.length; i++) {
-            Client c = newDeliver.listOfClients[i];
+            Client c = newWorld.listOfClients[i];
             
             // When a client is clicked
-            if (pos.insideHalf(c.getImage())) {
+            // If it's not going to change world
+            //   (meaning it's not the last client's request to be delivered)
+            if (pos.insideHalf(c.getImage()) && (deliver.onMouseClicked(pos) instanceof DeliverRequests)) {
+                
+                newWorld = (DeliverRequests)(deliver.onMouseClicked(pos));
                 
                 // If there is no request to be delivered
                 //   then the player is asking the client's request
@@ -295,13 +292,13 @@ public class Test {
                     
                     // If it's right, the request is delivered, the client goes away and the score increases
                     if (deliver.done.equals(c.getRequest()) &&
-                            (newDeliver.done.size != 0 || c.showHun() || newScore <= oldScore))
+                            (newWorld.done.size != 0 || c.showHun() || newScore <= oldScore))
                         throw new RuntimeException("ERROR IN: check_DeliverRequests (delivering the right order)");
                     
                     // If it's wrong, the request and the client stay, and the score decreases
                     //    (the score never goes below zero, so it can be equal to the old one)
                     else if (!deliver.done.equals(c.getRequest()) &&
-                            (newDeliver.done.size == 0 || !c.showHun() || deliver.score > oldScore))
+                            (newWorld.done.size == 0 || !c.showHun() || deliver.score > oldScore))
                         throw new RuntimeException("ERROR IN: check_DeliverRequests (delivering the wrong order)");
 
                 }
