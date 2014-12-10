@@ -99,13 +99,13 @@ public class MakeRequests extends World {
         
         // If clicked whithin the box of "deliver food"
         if (loc.inside(this.boxRight)) {
-            //System.out.println("Deliver the food.");
+            System.out.println("Deliver the food.");
             return new DeliverRequests(this.listOfClients, this.beingMade, this.LEVEL, 0, this.score);
         }
         
         // If clicked whithin the box of "start over"
         else if (loc.inside(this.boxLeft)) {
-            //System.out.println("Starting Over.");        
+            System.out.println("Starting Over...");        
             this.beingMade = new Request(new Food[0]);          
         }
         

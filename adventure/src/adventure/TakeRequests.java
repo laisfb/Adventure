@@ -119,7 +119,7 @@ public class TakeRequests extends World {
         
         // If clicked whithin the box of "make food"
         if (loc.inside(this.box)) {
-            //System.out.println("Go to kitchen.");
+            System.out.println("Go to kitchen.");
             return new MakeRequests(this.listOfClients, this.LEVEL, this.score);
         }
         

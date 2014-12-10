@@ -7,7 +7,7 @@ package adventure;
 
 import java.util.Random;
 import javalib.worldimages.Posn;
-import javax.swing.BoxLayout;
+
 
 /**
  *
@@ -67,10 +67,6 @@ public class Test {
         // System.out.println("Pos: (" + pos.x + "," + pos.y + ")");
         // System.out.println("Box: (" + take.box.pinhole.x + "," + take.box.pinhole.y + ")");
         
-        // Start a random Request
-        //   "pos" can be anything, since it's not going to be shown
-        make.beingMade = new Request(pos, make.LEVEL);
-        
         
        // Changing from TakeRequests to MakeRequests
         if (pos.inside(take.box)) {
@@ -94,6 +90,10 @@ public class Test {
         
         // Changing from MakeRequests to DeliverRequests
         if (pos.inside(make.boxRight)) {
+            
+            // Start a random Request
+            //   "pos" can be anything, since it's not going to be shown
+            make.beingMade = new Request(pos, make.LEVEL);
             
             // Has to change to the right world
             if (!(make.onMouseClicked(pos) instanceof DeliverRequests))
@@ -188,7 +188,7 @@ public class Test {
             if (pos.insideHalf(c.getImage()) &&
                  !(c.showRequestHun() &&
                    c.waiting == 0 &&
-                   take.score == newWorld.score))
+                   newWorld.score == take.score))
                 throw new RuntimeException("ERROR IN: check_TakeRequests (clicked on a client)");
         }
         
@@ -217,20 +217,22 @@ public class Test {
         while (pos.inside(make.boxRight))
             pos = randomPos(); 
         
-       
-        // If the "Start Over" button is clicked
-        //   the world stays the same
-        //   the request is restarted, meaning the size is zero        
-        if (pos.inside(make.boxLeft) && (!(make.onMouseClicked(pos) instanceof MakeRequests) || ((MakeRequests)make.onMouseClicked(pos)).beingMade.size != 0))
-            throw new RuntimeException("ERROR IN: check_MakeRequests (size of beingMade when start over)");
-        
         // Start a random Request
         //   "pos" can be anything, since it's not going to be shown
-        make.beingMade = new Request(pos, make.LEVEL);
-        
+        make.beingMade = new Request(pos, make.LEVEL); 
         int sizeBefore = make.beingMade.size;
+       
         MakeRequests newWorld = (MakeRequests) make.onMouseClicked(pos);
         
+        // If the "Start Over" button is clicked
+        //   - the world stays the same,
+        //   - the request is restarted, meaning the size is zero,       
+        //   - the score stays the same
+        if (pos.inside(make.boxLeft) && (!(newWorld instanceof MakeRequests) || 
+                                           newWorld.beingMade.size != 0 ||
+                                           newWorld.score != make.score))
+            throw new RuntimeException("ERROR IN: check_MakeRequests (size of beingMade when start over)");         
+                
         // Everytime a box is clicked, the request's size increase in one
         for(int i=0; i<9; i++) {
             if (pos.inside(make.boxes[i]) && newWorld.beingMade.size != sizeBefore + 1)
@@ -253,12 +255,18 @@ public class Test {
             pos = randomPos();
         
         // World generated after the click of the mouse
-        DeliverRequests newWorld = (DeliverRequests)(deliver.onMouseClicked(pos)); 
+        DeliverRequests newWorld = (DeliverRequests)(deliver.onMouseClicked(pos));
+        
+        int oldScore = deliver.score;
+        int newScore = newWorld.score;
 
         // If the "Drop Food" button is clicked
-        //   the world stays the same
-        //   and the request is dropped, meaning the size is now zero
-        if (pos.inside(deliver.boxLeft) && (!(newWorld instanceof DeliverRequests) || newWorld.done.size != 0))
+        //   - the world stays the same,
+        //   - the request is dropped, meaning the size is now zero,
+        //   - the score stays the same
+        if (pos.inside(deliver.boxLeft) && (!(newWorld instanceof DeliverRequests) ||
+                                              newWorld.done.size != 0 ||
+                                              newScore != oldScore))
             throw new RuntimeException("ERROR IN: check_transitions (Dropping the request)");
         
         
@@ -266,9 +274,6 @@ public class Test {
         //   "pos" can be anything, since it's not going to be shown
         deliver.done = newWorld.listOfClients[randomInt(deliver.listOfClients.length-1)].getRequest();
         
-        
-        int oldScore = deliver.score;
-        int newScore = newWorld.score;
         
         for (int i=0; i<deliver.listOfClients.length; i++) {
             Client c = newWorld.listOfClients[i];
@@ -282,9 +287,12 @@ public class Test {
                 
                 // If there is no request to be delivered
                 //   then the player is asking the client's request
-                // So the counter goes back to zero
-                //   and the scores decreases a little bit (never going below zero, so it can be equal to the old one)
-                if (deliver.done.size == 0 && (deliver.time != 0 || newScore > oldScore))
+                // So the request is shown, the overall time goes back to zero
+                //   the client's waiting time and the scores decreases a little bit 
+                // (never going below zero, so it can be equal to the old one)
+                if (deliver.done.size == 0 && (!newWorld.listOfClients[i].showRequestHun() ||
+                                                newWorld.listOfClients[i].waiting != 0 ||
+                                                deliver.time != 0 || newScore > oldScore))
                     throw new RuntimeException("ERROR IN: check_DeliverRequests (asking the request again)");
 
                 // If there is a request being delivered
@@ -298,7 +306,7 @@ public class Test {
                     // If it's wrong, the request and the client stay, and the score decreases
                     //    (the score never goes below zero, so it can be equal to the old one)
                     else if (!deliver.done.equals(c.getRequest()) &&
-                            (newWorld.done.size == 0 || !c.showHun() || deliver.score > oldScore))
+                                (newWorld.done.size == 0 || !c.showHun() || newScore > oldScore))
                         throw new RuntimeException("ERROR IN: check_DeliverRequests (delivering the wrong order)");
 
                 }
