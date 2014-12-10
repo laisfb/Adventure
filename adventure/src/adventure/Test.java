@@ -134,14 +134,20 @@ public class Test {
               
         
         
-        boolean show = Client.allGone(deliver.listOfClients);
+        boolean gone = Client.allGone(deliver.listOfClients);
         
         // Just making sure it's not trying to go to the MakeRequests world
         //   or trying to drop a request
-        if (!pos.inside(deliver.boxRight) && !pos.inside(deliver.boxLeft) && show && !(deliver.onMouseClicked(pos) instanceof nextLevel))
+        if (!pos.inside(deliver.boxRight) && !pos.inside(deliver.boxLeft) && gone && 
+                !((deliver.onMouseClicked(pos) instanceof nextLevel)  || // Case of when all requests are delivered
+                  // Cases of when the last client gives up
+                  (take.onTick() instanceof nextLevel) ||
+                  (make.onTick() instanceof nextLevel) ||
+                  (deliver.onTick() instanceof nextLevel)))
                 throw new RuntimeException("ERROR IN: check_DeliverRequests (DeliverRequests -> nextLevel)");
         
     }
+    
     
     public static void check_TakeRequests() {
         
@@ -164,6 +170,27 @@ public class Test {
                     throw new RuntimeException("ERROR IN: check_TakeRequests (repeated foods)");
             }
             
+        }
+        
+        // If you click on a client
+        //   - the request must show up
+        //   - the client's waiting time restart
+        //   - the score stays the same
+        Posn pos = randomPos();
+        
+        // To make sure it's not going to change worlds
+        while (pos.inside(take.box))
+            pos = randomPos(); 
+                
+        TakeRequests newWorld = (TakeRequests) take.onMouseClicked(pos);
+                
+        for (int i=0; i<newWorld.listOfClients.length; i++) {
+            Client c = newWorld.listOfClients[i];
+            if (pos.insideHalf(c.getImage()) &&
+                 !(c.showRequestHun() &&
+                   c.waiting == 0 &&
+                   take.score == newWorld.score))
+                throw new RuntimeException("ERROR IN: check_TakeRequests (clicked on a client)");
         }
         
     }
