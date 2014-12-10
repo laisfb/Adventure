@@ -22,7 +22,7 @@ public class Test {
      */
     public static void main(String[] args) {
         
-        // level , showRequests , time
+        // level , time
         if (!testingMode) {
             TakeRequests take = new TakeRequests(1, 0);
             take.bigBang(900,900,1);
@@ -30,7 +30,6 @@ public class Test {
         else {
             
             for(int i=0; i<500; i++) {
-                //System.out.println("Test " + (i + 1));
                 check_transitions();
                 check_TakeRequests();
                 check_MakeRequests();
@@ -53,6 +52,9 @@ public class Test {
     }
     
 
+    // There is only two ways to change a world
+    //   - by clicking the button on the right 
+    //   - when all clients are gone (next level / game over)
     public static void check_transitions() {
         
         int level = randomInt(4) + 1; // From 1 to 5
@@ -60,45 +62,83 @@ public class Test {
         MakeRequests make = new MakeRequests(take.listOfClients, take.LEVEL, take.score);
         DeliverRequests deliver = new DeliverRequests(make.listOfClients, make.beingMade, make.LEVEL, 0, make.score);
         
+        
         Posn pos = randomPos(); // new Posn(810, 846);
         // System.out.println("Pos: (" + pos.x + "," + pos.y + ")");
         // System.out.println("Box: (" + take.box.pinhole.x + "," + take.box.pinhole.y + ")");
         
-        
-        if (pos.inside(take.box) && !(take.onMouseClicked(pos) instanceof MakeRequests))
-            throw new RuntimeException("ERROR IN: check_transitions (TakeRequests -> MakeRequests)");
-        
-        
-        if (pos.inside(make.boxRight) && !(make.onMouseClicked(pos) instanceof DeliverRequests))
-            throw new RuntimeException("ERROR IN: check_transitions (MakeRequests -> DeliverRequests)");
+        // Start a random Request
+        //   "pos" can be anything, since it's not going to be shown
+        make.beingMade = new Request(pos, make.LEVEL);
         
         
-        // If the "Start Over" button is clicked
-        //   the world stays the same
-        //   the request is restarted, meaning the size is zero        
-        else if (pos.inside(make.boxLeft) && !(make.onMouseClicked(pos) instanceof MakeRequests) && ((MakeRequests)make.onMouseClicked(pos)).beingMade.size != 0)
-            throw new RuntimeException("ERROR IN: check_MakeRequests (size of beingMade when start over)");
+       // Changing from TakeRequests to MakeRequests
+        if (pos.inside(take.box)) {
+        
+            // Has to change to the right world
+            if (!(take.onMouseClicked(pos) instanceof MakeRequests))
+                throw new RuntimeException("ERROR IN: check_transitions (TakeRequests -> MakeRequests)");
+            
+            // Parameters must stay the same:
+            //   - the list of clients
+            //   - the current level
+            //   - the score
+            MakeRequests newWorld = (MakeRequests)take.onMouseClicked(pos);
+            if (!(take.listOfClients).equals(newWorld.listOfClients) ||
+                 (take.LEVEL != newWorld.LEVEL) ||
+                 (take.score != newWorld.score))
+                throw new RuntimeException("ERROR IN: check_transitions_parameters (TakeRequests -> MakeRequests)");
+            
+        }
         
         
-        if (pos.inside(deliver.boxRight) && !(deliver.onMouseClicked(pos) instanceof MakeRequests))
-            throw new RuntimeException("ERROR IN: check_transitions (DeliverRequests -> MakeRequests)");
+        // Changing from MakeRequests to DeliverRequests
+        if (pos.inside(make.boxRight)) {
+            
+            // Has to change to the right world
+            if (!(make.onMouseClicked(pos) instanceof DeliverRequests))
+                throw new RuntimeException("ERROR IN: check_transitions (MakeRequests -> DeliverRequests)");
+            
+            // Parameters must stay the same:
+            //   - the list of clients
+            //   - the current level
+            //   - the score
+            //   - the request being made (most important!)
+            DeliverRequests newWorld = (DeliverRequests)make.onMouseClicked(pos);
+            if (!(make.listOfClients).equals(newWorld.listOfClients) ||
+                 (make.LEVEL != newWorld.LEVEL) ||
+                 (make.score != newWorld.score) ||
+                !(make.beingMade).equals(newWorld.done))
+                throw new RuntimeException("ERROR IN: check_transitions_parameters (MakeRequests -> DeliverRequests)");         
+            
+        }
+                
+        // Changing from DeliverRequests to MakeRequests
+        if (pos.inside(deliver.boxRight)) {
+            
+            // Has to change to the right world
+            if (!(deliver.onMouseClicked(pos) instanceof MakeRequests))
+                throw new RuntimeException("ERROR IN: check_transitions (DeliverRequests -> MakeRequests)");
+            
+            // Parameters must stay the same:
+            //   - the list of clients
+            //   - the current level
+            //   - the score
+            MakeRequests newWorld = (MakeRequests)deliver.onMouseClicked(pos); 
+            if (!(deliver.listOfClients).equals(newWorld.listOfClients) ||
+                 (deliver.LEVEL != newWorld.LEVEL) ||
+                 (deliver.score != newWorld.score))
+                throw new RuntimeException("ERROR IN: check_transitions_parameters (DeliverRequests -> MakeRequests)");
+            
+        }
+              
         
         
-        // If the "Drop Food" button is clicked
-        //   the world stays the same
-        //   and the request is dropped, meaning the size is now zero
-        else if (pos.inside(deliver.boxLeft) && !(deliver.onMouseClicked(pos) instanceof DeliverRequests) && ((DeliverRequests)deliver.onMouseClicked(pos)).done.size != 0)
-            throw new RuntimeException("ERROR IN: check_transitions (Dropping the request)");
-        
-        
-        boolean show = false;
-        for (int i=0; i<deliver.listOfClients.length; i++)
-            if (deliver.listOfClients[i].showHun())
-                show = true;
+        boolean show = Client.allGone(deliver.listOfClients);
         
         // Just making sure it's not trying to go to the MakeRequests world
         //   or trying to drop a request
-        if (!pos.inside(deliver.boxRight) && !pos.inside(deliver.boxLeft) && !show && !(deliver.onMouseClicked(pos) instanceof nextLevel))
+        if (!pos.inside(deliver.boxRight) && !pos.inside(deliver.boxLeft) && show && !(deliver.onMouseClicked(pos) instanceof nextLevel))
                 throw new RuntimeException("ERROR IN: check_DeliverRequests (DeliverRequests -> nextLevel)");
         
     }
@@ -119,8 +159,8 @@ public class Test {
             if (req.size < 3)
                 throw new RuntimeException("ERROR IN: check_TakeRequests (size of Request)");
             
-            for (int j=0; j<req.size; j++) {
-                if (req.howMany(req.listOfFood[j]) != 1)
+            for (int j=0; j<9; j++) {
+                if (req.howMany(Request.everyFood[j]) > 1)
                     throw new RuntimeException("ERROR IN: check_TakeRequests (repeated foods)");
             }
             
@@ -148,9 +188,15 @@ public class Test {
         Posn pos = randomPos();        
         
         // To make sure it's not going to change worlds
-        while (pos.inside(make.boxLeft) || pos.inside(make.boxRight))
+        while (pos.inside(make.boxRight))
             pos = randomPos(); 
         
+       
+        // If the "Start Over" button is clicked
+        //   the world stays the same
+        //   the request is restarted, meaning the size is zero        
+        if (pos.inside(make.boxLeft) && (!(make.onMouseClicked(pos) instanceof MakeRequests) || ((MakeRequests)make.onMouseClicked(pos)).beingMade.size != 0))
+            throw new RuntimeException("ERROR IN: check_MakeRequests (size of beingMade when start over)");
         
         // Start a random Request
         //   "pos" can be anything, since it's not going to be shown
@@ -177,9 +223,15 @@ public class Test {
         
         Posn pos = randomPos();
         
-        // To make sure it's not going to change worlds or drop the request
-        while (pos.inside(deliver.boxLeft) || pos.inside(deliver.boxRight))
-            pos = randomPos(); 
+        // To make sure it's not going to change worlds
+        while (pos.inside(deliver.boxRight))
+            pos = randomPos();
+
+        // If the "Drop Food" button is clicked
+        //   the world stays the same
+        //   and the request is dropped, meaning the size is now zero
+        if (pos.inside(deliver.boxLeft) && (!(deliver.onMouseClicked(pos) instanceof DeliverRequests) || ((DeliverRequests)deliver.onMouseClicked(pos)).done.size != 0))
+            throw new RuntimeException("ERROR IN: check_transitions (Dropping the request)");
         
         // Pretend to deliver using a random Request
         //   "pos" can be anything, since it's not going to be shown
