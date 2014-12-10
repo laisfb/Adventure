@@ -32,7 +32,7 @@ public class DeliverRequests extends World {
         this.LEVEL = level;
         this.time = time;
         this.score = score;
-        
+        System.out.println("score: " + this.score);
         this.boxRight = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
         this.boxLeft = new RectangleImage(new Posn(90, 846), 150, 40, Color.ORANGE);        
         
@@ -176,12 +176,15 @@ public class DeliverRequests extends World {
         }
                 
         // Clients will go away if you take too long to deliver their food
+        //   but only the ones that are still there
         for (int i=0; i < this.listOfClients.length; i++) {
+            if (this.listOfClients[i].showHun()) {
                this.listOfClients[i].stillWaiting();
                if (this.listOfClients[i].doneWaiting()) {
                    this.listOfClients[i].dontShow();
                    this.score -= 10;
                }
+            }
         }
         
         // Making sure there's no negative score

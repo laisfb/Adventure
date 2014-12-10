@@ -33,7 +33,7 @@ public class MakeRequests extends World {
     MakeRequests(Client[] clients, int level, int score) {
         this.LEVEL = level;
         this.score = score;
-        
+        System.out.println("score: " + this.score);
         this.boxRight = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
         this.boxLeft = new RectangleImage(new Posn(90, 846), 150, 40, Color.ORANGE);
         
@@ -128,12 +128,15 @@ public class MakeRequests extends World {
     public World onTick() {
         // Time goes by while you are making the food
         // After all, the clients are still waiting
+        //   but only the ones that are still there
         for (int i=0; i < this.listOfClients.length; i++) {
+            if (this.listOfClients[i].showHun()) {
                this.listOfClients[i].stillWaiting();
                if (this.listOfClients[i].doneWaiting()) {
                    this.listOfClients[i].dontShow();
                    this.score -= 10;
                }
+            }
         }
         
         // Making sure there's no negative score

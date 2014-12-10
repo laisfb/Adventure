@@ -15,7 +15,7 @@ import javalib.worldimages.Posn;
  */
 public class Test {
 
-    private final static boolean testingMode = true;
+    private final static boolean testingMode = false;
 
     /**
      * @param args the command line arguments

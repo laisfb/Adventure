@@ -19,7 +19,7 @@ public class TakeRequests extends World {
     private final String str = "C:\\Users\\laisfb\\Documents\\GitHub\\Adventure\\adventure\\src\\images\\";
 
     int LEVEL = -1;
-    int score = 0;    
+    int score;  
     int time;
     
     RectangleImage box;
@@ -32,7 +32,7 @@ public class TakeRequests extends World {
         this.time = 0;
         
         this.box = new RectangleImage(new Posn(810, 846), 150, 40, Color.ORANGE);
-        
+        System.out.println("score: " + this.score);
         if (this.LEVEL == 1) {
             this.listOfClients = new Client[1];
             this.listOfClients[0] = Client.randomClient(this.LEVEL);
@@ -151,12 +151,15 @@ public class TakeRequests extends World {
         }
         
         // Clients will go away if you take too long to deliver their food
+        //   but only the ones that are still there
         for (int i=0; i < this.listOfClients.length; i++) {
+            if (this.listOfClients[i].showHun()) {
                this.listOfClients[i].stillWaiting();
                if (this.listOfClients[i].doneWaiting()) {
                    this.listOfClients[i].dontShow();
                    this.score -= 10;
                }
+            }
         }
         
         // Making sure there's no negative score
